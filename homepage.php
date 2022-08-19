@@ -5,6 +5,7 @@
 <head>
   <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"> </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script type="text/javascript" src="main.js"> </script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="mystyle.css">
   <title>Home</title>
@@ -251,13 +252,8 @@
   </div>
   <canvas id=pane style="display:none"></canvas>
   <input id="inputtext" type="text" style="z-index:101; position:absolute; top:90%; left:30%;width:40%;display:none;" class="form-control" />
+  <!-- <script type="module">import { game, restartLevel } from "./game0.js"</script> -->
   <script src="game0.js"></script>
-
-  <!-- Carousel attempt 
-<img src="/thegame/buttons/leftarrow.png" style="width:3%; height:width">Easy<img src="/thegame/buttons/rightarrow.png" style="width:3%; height:width">
--->
-
-  <!-- <button id="myBtn" style="z-index:101; position:absolute; top:500px; left:800px; display:none">Submit</button> -->
 
   <!-- level introduction -->
   <img id="introductionImage" src="/thegame/buttons/levelselector.png" style="display:none; position:absolute; top:250px; left:600px;">

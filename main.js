@@ -91,8 +91,9 @@ function settingsDisplay() {
     }
 }
 
+let totalLevels = totalLevelsForGame
 // colouring buttons
-for (let i = 0; i < totalLevelsForGame; i++)
+for (let i = 0; i < totalLevels; i++)
 if (perfectStates[i] == 1) {
   // document.getElementById('levelBtn'+(i+1)).classList.add('easy-shadow');
   // document.getElementById('levelBtn'+(i+1)).style.borderColor = 'rgba(0,0,0,0)';

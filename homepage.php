@@ -89,6 +89,41 @@
   }
   unset($db);
   ?>
+  <!-- game canvas -->
+  <canvas id=pane style="display:none"></canvas>
+  <input id="inputtext" type="text" style="z-index:101; position:absolute; top:90%; left:30%;width:40%;display:none;" class="form-control" />
+
+  <!-- module version new -->
+  <script type="module">
+    import {
+      game,
+      restartLevel
+    } from "./game0.js"
+    const allLevels = document.getElementsByClassName("regular-levels")
+    for (let i = 1; i < allLevels.length; i++) {
+      let mini = 25 * (i - 1)
+      let maxi = 25 + 25 * (i - 1)
+      allLevels[i - 1].addEventListener('click', function() {
+        game(mini, maxi)
+      })
+    }
+  </script>
+
+  <!-- old versions
+  <script>
+    const allLevels = document.getElementsByClassName("regular-levels")
+    for (let i = 1; i < allLevels.length; i++) {
+      let mini = 25 * (i - 1)
+      let maxi = 25 + 25 * (i - 1)
+      allLevels[i - 1].addEventListener('click', function() {
+        const game = new game(mini, maxi)
+      })
+    }
+  </script>
+
+  <script src="game0.js">
+
+  </script> -->
 
   <!-- game menu/level select -->
   <div class="container-fluid" id="gameMenu" style="display:block; position:absolute; top:30%; left:0px;">
@@ -114,7 +149,7 @@
         <!-- making all the levels -->
         <?php
         for ($j = 1; $j <= $totalLevelsForGame[0]; $j++) {
-          echo "<button id='levelBtn" . $j . "' style='width:7%;horizontal-align:left' class='btn btn-lg reg-border' onclick='game(" . (25 * ($j - 1)) . "," . (25 + 25 * ($j - 1)) . ")'>" . $j . "</button>";
+          echo "<button id='levelBtn" . $j . "' style='width:7%;horizontal-align:left' class='btn btn-lg reg-border regular-levels'>" . $j . "</button>";
         }
         ?>
       </div>
@@ -209,10 +244,7 @@
     <img id="freezeImage" src="/thegame/booster/freeze.png" style="z-index:101; position:absolute; top:45%; left:1%; display:block; width:6%;height:width; opacity: 0.3">
     <img id="frenzyImage" src="/thegame/booster/frenzy.png" style="z-index:101; position:absolute; top:60%; left:1%; display:block; width:6%;height:width; opacity: 0.3">
   </div>
-  <canvas id=pane style="display:none"></canvas>
-  <input id="inputtext" type="text" style="z-index:101; position:absolute; top:90%; left:30%;width:40%;display:none;" class="form-control" />
-  <!-- <script type="module">import { game, restartLevel } from "./game0.js"</script> -->
-  <script src="game0.js"></script>
+
 
   <!-- level introduction -->
   <img id="introductionImage" src="/thegame/buttons/levelselector.png" style="display:none; position:absolute; top:250px; left:600px;">

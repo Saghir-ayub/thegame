@@ -6,13 +6,13 @@ window.onload = function () {
   }
 }
 
-function restartLevel () {
+function restartLevel() {
   const levelMinimum = localStorage.getItem('levelMinimum')
   const levelMaximum = localStorage.getItem('levelMaximum')
   game(levelMinimum, levelMaximum)
 }
 
-function game (minimumWord, maximumWord) {
+function game(minimumWord, maximumWord) {
   // removing any stored minimumWord
   localStorage.removeItem('levelMinimum')
   localStorage.removeItem('levelMaximum')
@@ -40,7 +40,7 @@ function game (minimumWord, maximumWord) {
   let cmTID
   const timeStep = 50 // In milliseconds
 
-  function windowResize () {
+  function windowResize() {
     c.canvas.width = window.innerWidth
     c.canvas.height = window.innerHeight
     w = c.canvas.width
@@ -113,7 +113,7 @@ function game (minimumWord, maximumWord) {
   const hsk1engBooster = passPinyin.slice(0, maximumWord)
 
   // intro animation
-  function Introduction () {
+  function Introduction() {
     clearTimeout(cmTID)
 
     c.save()
@@ -220,7 +220,7 @@ function game (minimumWord, maximumWord) {
     }
   })
 
-  function Pause () {
+  function Pause() {
     setTimeout(() => {
       document.getElementById('pauseinterface').style.display = 'block'
       c.save()
@@ -238,7 +238,7 @@ function game (minimumWord, maximumWord) {
     window.location.href = '/thegame/homepage.php'
   })
 
-  function databaseScoreUpdate (dataName) {
+  function databaseScoreUpdate(dataName) {
     const data = dataName
     const hr = new XMLHttpRequest()
     const url = 'updateScore.php?q='
@@ -246,7 +246,7 @@ function game (minimumWord, maximumWord) {
     hr.send()
   }
 
-  function comboBoosterCheck () {
+  function comboBoosterCheck() {
     if (wordStreak % firstBoostCombo === 0) {
       BoosterSpawn('slowmo')
     }
@@ -258,7 +258,7 @@ function game (minimumWord, maximumWord) {
     }
   }
 
-  function Enemy () {
+  function Enemy() {
     this.isize = 30
     this.maxDy = initialSpeed
 
@@ -379,7 +379,7 @@ function game (minimumWord, maximumWord) {
     }
   }
 
-  function Booster (boosterType) {
+  function Booster(boosterType) {
     this.isize = 30
     this.maxDy = 1
     this.type = boosterType
@@ -484,19 +484,19 @@ function game (minimumWord, maximumWord) {
     }
   }
 
-  function EnemySpawn () {
+  function EnemySpawn() {
     const f = new Enemy()
     numEnemies += 1
     enemies.push(f)
   }
 
-  function BoosterSpawn (typeOfBooster) {
+  function BoosterSpawn(typeOfBooster) {
     const b = new Booster(typeOfBooster)
     numBoosters += 1
     boosters.push(b)
   }
 
-  function IsGameOver () {
+  function IsGameOver() {
     switch (gameMode) {
       case 'Regular':
         if (currentLives <= 0) {
@@ -537,7 +537,7 @@ function game (minimumWord, maximumWord) {
     }
   }
 
-  function SpawnEnemyCheck () {
+  function SpawnEnemyCheck() {
     switch (gameMode) {
       case 'Regular':
         if (respawnTimer > initialEnemySpawnRate && numEnemies < 40) {
@@ -574,7 +574,7 @@ function game (minimumWord, maximumWord) {
     enemies.push(e)
   }
 
-  function updateAll () {
+  function updateAll() {
     // Move enemies
     for (let i = 0; i < numEnemies; i++) {
       const enemy = enemies[i]
@@ -694,7 +694,7 @@ function game (minimumWord, maximumWord) {
     }
   }
 
-  function endGameresults () {
+  function endGameresults() {
     // screen clear
     c.clearRect(0, 0, w, h)
 
@@ -790,4 +790,4 @@ function game (minimumWord, maximumWord) {
   }
 }
 
-// export {game, restartLevel }
+export {game, restartLevel }

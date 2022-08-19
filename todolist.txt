@@ -1,0 +1,31 @@
+Figure out how to update score for different users // DONE
+
+Add in different game modes: // DONE
+	Endurance mode (more info further down) // DONE
+	timer - survive as long as possible mode? countdown timer mode? // DONE
+	race - words spawn after 1 is killed or reaches bottom? pre-spawn next 2 words?) // DONE
+
+Dynamically link scoring update system to different langauges // DONE
+
+
+Endurance mode:
+Have a dynamically updated custom game choice interface, square blocks with name/levels/groups;
+	paint image "CustomeGameChoiceInterface.jpg" <-- to be made
+
+Implement combo tracker (resets when wrong increments when word entered increases score) // DONE
+
+Give effects depending on combo breaker at intervals of 5/10/20, activatable button maybe? effect on click; // DONE
+	5 = slow down speed for x seconds, points per regular word + 1 // DONE
+	10 = freeze all words for x seconds, points per regular word + 2 // NEEDS IMPLEMENTING
+	20 = spawn a group of words to screen for x seconds, frozen for some time, on correct entry 10x points // NEEDS IMPLEMENTING
+	50 (nightmaremode only) = One time unlock of something, unique per level, something worth hunting,
+		displayed in achievments 
+
+pick speed, add in booster words (slow down/freeze words when entered, adds lives, traverses 
+	through levels as you get certain amount right, random spawns)
+
+Custom game modes:
+Add in a custom game mode, chooses levels to combine together/play words by their group (dynamic dropdown?)
+Figure out how to import CSV files as a custom game mode
+
+

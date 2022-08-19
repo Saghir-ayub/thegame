@@ -1,0 +1,253 @@
+body {
+    /*background-color: rgb(130, 225, 238);*/
+    /* height: 100%; */
+    background-image: url("/thegame/backgrounds/homepage3.jpg");
+    /* opacity: 1;*/
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+
+}
+
+/* .bg{
+    
+    height: 100%;
+} */
+
+.center {
+    margin: auto;
+    width: 90%;
+    /* border: 5px solid #ffff00; */
+    padding: 10px;
+}
+
+.col-centered {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.headertext {
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 2.5em;
+    letter-spacing: -2px;
+    border-bottom: 2px solid black;
+    text-transform: uppercase;
+}
+
+.centerpause {
+    margin: auto;
+    display: absolute;
+    top: 100px;
+    width: 60%;
+    padding: 10px;
+    text-align: center;
+    /* border: 5px solid #ffff00; */
+}
+
+.borderchecker {
+    border: 5px solid #ffff00;
+}
+
+.levels {
+    display: none;
+}
+
+.difficulty {
+    display: none;
+}
+
+.btn-dark {
+    /* background-color: rgb(34, 30, 30); */
+    background: linear-gradient(-45deg, #e6d309, #000000, #e6d309);
+    background-size: 300% 300%;
+    color: rgb(234, 255, 0);
+    border-color: rgb(224, 254, 0);
+    font-style: oblique;
+}
+
+.btn-dark:hover,
+.btn-dark:focus,
+.btn-dark:active,
+.btn-dark.active,
+.open .dropdown-toggle.btn-dark {
+
+    background-color: #2bbcda;
+
+    color: rgb(234, 255, 0);
+
+    border-color: rgb(224, 254, 0);
+}
+
+.table-bordered {
+    border: 1px;
+}
+
+.reg-border {
+    border-color: #000;
+}
+
+table tr:nth-child(1) {
+    font-weight: bold;
+}
+
+table td:nth-child(1) {
+    width: 150px;
+}
+
+table td:nth-child(2) {
+    width: 250px;
+}
+
+table td:nth-child(3) {
+    width: 750px;
+}
+
+.button-wrapper .btn {
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+.easy-shadow {
+    animation: easy 1s ease-in-out infinite alternate;
+    border-width: 3px;
+}
+
+@keyframes easy {
+    100% {
+        border-color: #CD7F32;
+        box-shadow: 0 0 30px #CD7F32, 0 0 30px #CD7F32, 0 0 30px #CD7F32;
+    }
+
+    0% {
+        box-shadow: 0 0 30px #CD7F32b7, 0 0 30px #CD7F32b7;
+        border-color: #CD7F32;
+    }
+}
+
+.normal-shadow {
+    animation: normals 1s ease-in-out infinite alternate;
+    border-width: 2px;
+}
+
+@keyframes normals {
+    100% {
+        border-color: #CD7F32;
+        box-shadow: 0 0 30px #CD7F32, 0 0 30px #CD7F32;
+    }
+
+    0% {
+        box-shadow: 0 0 30px #CD7F32b7, 0 0 30px #CD7F32b7;
+        border-color: #CD7F32;
+    }
+}
+
+.hard-shadow {
+    animation: hard 1s ease-in-out infinite alternate;
+    border-width: 2px;
+}
+
+@keyframes hard {
+    100% {
+        border-color: #C0C0C0;
+        box-shadow: 0 0 30px #C0C0C0, 0 0 30px #C0C0C0, 0 0 30px #C0C0C0;
+    }
+
+    0% {
+        box-shadow: 0 0 30px #C0C0C0b7, 0 0 30px #C0C0C0b7, 0 0 30px #C0C0C0b7;
+        border-color: #C0C0C0;
+    }
+}
+
+.nightmare-shadow {
+    animation: nightmare 1s ease-in-out infinite alternate;
+    border-width: 2px;
+}
+
+@keyframes nightmare {
+    100% {
+        border-color: #e7e708;
+        box-shadow: 0 0 30px #e7e708, 0 0 30px #e7e708;
+    }
+
+    0% {
+        box-shadow: 0 0 30px #e7e708b7, 0 0 30px #e7e708b7;
+        border-color: #e7e708;
+    }
+}
+
+/*----------------------------------------------------The Modal (background) and scoreboard---------------------------------------------------- */
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 400px;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.maxLevel {
+    animation: maxlevelanim 15s infinite;
+}
+
+@keyframes maxlevelanim {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.scoreBtn {
+    width: 7%;
+    margin-top: 5px;
+    border-radius: 5px;
+    height: 60px;
+    vertical-align: middle;
+}

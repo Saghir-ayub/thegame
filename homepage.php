@@ -16,14 +16,14 @@
   <?php
   $db = new SQLite3('enemyvalues.sq3');
   // user setting queries
-  $sql_Lang = "SELECT Language FROM UserSettings WHERE UserID = 'bubness'";
-  $sql_Diff = "SELECT Difficulty FROM UserSettings WHERE UserID = 'bubness'";
-  $sql_Mode = "SELECT Gamemode FROM UserSettings WHERE UserID = 'bubness'";
-  $result_Lang = $db->query($sql_Lang);
-  $result_Diff = $db->query($sql_Diff);
-  $result_Mode = $db->query($sql_Mode);
-  $currentLanguage = $result_Lang->fetchArray();
-  $currentDifficulty = $result_Diff->fetchArray();
+  $sql_Lang = "SELECT Language FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
+  $sql_Diff = "SELECT Difficulty FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
+  $sql_Mode = "SELECT Gamemode FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
+  $result_Lang = $db->query($sql_Lang); // NEED FOR PHP
+  $result_Diff = $db->query($sql_Diff); // NEED FOR PHP
+  $result_Mode = $db->query($sql_Mode); // NEED FOR PHP
+  $currentLanguage = $result_Lang->fetchArray(); // NEED FOR PHP
+  $currentDifficulty = $result_Diff->fetchArray(); // NEED FOR PHP
   switch ($currentDifficulty[0]) {
     case 'Easy':
       $currentDifficultyValue = 1;
@@ -40,21 +40,21 @@
     default:
       $currentDifficultyValue = 1;
   }
-  $currentGamemode = $result_Mode->fetchArray();
+  $currentGamemode = $result_Mode->fetchArray(); // NEED FOR PHP
   $currentGamemodeEmpty = str_replace(' ', '', $currentGamemode[0]);
 
   // words, levels, group queries
   $sql = "SELECT * FROM ChineseWords";
   $sqlLevels = "SELECT " . $currentGamemodeEmpty . "Score FROM UserChineseLevels WHERE UserID = 'bubness'";
   $sqlPerfect = "SELECT " . $currentGamemodeEmpty . "Perfect FROM UserChineseLevels WHERE UserID = 'bubness'";
-  $sqlTotalLevels = "SELECT COUNT(DISTINCT ChineseWords.Level) FROM ChineseWords";
+  $sqlTotalLevels = "SELECT COUNT(DISTINCT ChineseWords.Level) FROM ChineseWords"; // NEED FOR PHP
   $sqlLevelSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Level'";
   $sqlGroupSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Group'";
 
   $result = $db->query($sql);
   $resultLevels = $db->query($sqlLevels);
   $resultPerfect = $db->query($sqlPerfect);
-  $resultTotalWords = $db->query($sqlTotalLevels);
+  $resultTotalWords = $db->query($sqlTotalLevels); // NEED FOR PHP
   $resultLevelSeperator = $db->query($sqlLevelSeperator);
   $resultGroupSeperator = $db->query($sqlGroupSeperator);
 
@@ -65,7 +65,7 @@
   $englishChars = array();
   $levelScores = array();
   $perfectStates = array();
-  $totalLevelsForGame = $resultTotalWords->fetchArray();
+  $totalLevelsForGame = $resultTotalWords->fetchArray(); // NEED FOR PHP
   $levelSeperatorPoints = array();
   $groupSeperatorPoints = array();
 
@@ -97,7 +97,8 @@
   <script type="module">
     import {
       game,
-      restartLevel
+      restartLevel,
+      endgameDisplayLayout,
     } from "./game0.js"
     const allLevels = document.getElementsByClassName("regular-levels")
     for (let i = 1; i < allLevels.length; i++) {
@@ -238,6 +239,23 @@
     let gameMode = <?php echo json_encode($currentGamemode[0]); ?>;
   </script>
 
+  <script>
+    // colouring buttons
+    for (let i = 0; i < totalLevelsForGame; i++)
+      if (perfectStates[i] == 1) {
+        // document.getElementById('levelBtn'+(i+1)).classList.add('easy-shadow');
+        // document.getElementById('levelBtn'+(i+1)).style.borderColor = 'rgba(0,0,0,0)';
+      } else if (perfectStates[i] == 2) {
+      document.getElementById('levelBtn' + (i + 1)).classList.add('normal-shadow');
+      document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
+    } else if (perfectStates[i] == 3) {
+      document.getElementById('levelBtn' + (i + 1)).classList.add('hard-shadow');
+      document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
+    } else if (perfectStates[i] == 4) {
+      document.getElementById('levelBtn' + (i + 1)).classList.add('nightmare-shadow');
+      document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
+    }
+  </script>
   <!-- canvas/game and input boxes -->
   <div id="boosterImages" style="display:none">
     <img id="slowMoImage" src="/thegame/booster/slowmo.png" style="z-index:101; position:absolute; top:30%; left:1%; display:block; width:6%;height:width; opacity:0.3">

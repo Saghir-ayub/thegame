@@ -3,7 +3,7 @@ window.onload = function () {
   if (reloading) {
     sessionStorage.removeItem('reloading')
     restartLevel()
-  }
+  } 
 }
 
 function restartLevel() {
@@ -21,6 +21,20 @@ function game(minimumWord, maximumWord) {
   localStorage.setItem('levelMinimum', minimumWord)
   localStorage.setItem('levelMaximum', maximumWord)
 
+  // pulling database variables
+  // let difficultyLevelTest
+  // var getUserRequest=new XMLHttpRequest();
+  // getUserRequest.onreadystatechange=function() {
+  //   if (this.readyState==4 && this.status==200) {
+  //     let gameStartVariables = this.responseText;
+  //     const parsedGameStartVariables = JSON.parse(gameStartVariables)
+  //     difficultyLevelTest = parsedGameStartVariables.currentDifficulty
+  //   }
+  // }
+  
+  // getUserRequest.open("GET","getgamedata.php",true);
+  // getUserRequest.send(); 
+
   // displaying game canvas and input bar
   const levelChoice = (minimumWord / 25) + 1
   const background = '/thegame/backgrounds/background' + levelChoice + '.gif'
@@ -36,6 +50,7 @@ function game(minimumWord, maximumWord) {
   let w = c.canvas.width
   let h = c.canvas.height
   let gameState = 'play'
+  let gameResult = ''
   let introTimer = 5 // seconds
   let cmTID
   const timeStep = 50 // In milliseconds
@@ -502,7 +517,7 @@ function game(minimumWord, maximumWord) {
         if (currentLives <= 0) {
           gameState = 'finish'
           gameResult = 'fail'
-        } else if (enemiesAlive === 0 && numEnemies >= 40) {
+        } else if (enemiesAlive === 0 && numEnemies >= 1) {
           gameState = 'finish'
           gameResult = 'pass'
         }
@@ -684,12 +699,10 @@ function game(minimumWord, maximumWord) {
     c.restore()
     // Do it all again in a little while
     clearTimeout(cmTID)
-
     // Only animate if the game isn't over
-    if (gameState === 'play') {
+    if (gameState == 'play') {
       cmTID = setTimeout(updateAll, timeStep)
-    } else if (gameState === 'finish') {
-      // window.location.href = "homepage.php";
+    } else if (gameState == 'finish') {
       endGameresults()
     }
   }
@@ -790,4 +803,12 @@ function game(minimumWord, maximumWord) {
   }
 }
 
-export {game, restartLevel }
+function endgameDisplayLayout() {
+  document.getElementById('inputtext').style.display = 'none'
+  document.getElementById('slowMoImage').style.opacity = '0.3'
+  document.getElementById('freezeImage').style.opacity = '0.3'
+  document.getElementById('frenzyImage').style.opacity = '0.3'
+  document.getElementById('boosterImages').style.display = 'none'
+}
+
+export { game, restartLevel, endgameDisplayLayout }

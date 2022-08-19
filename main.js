@@ -1,23 +1,3 @@
-function endgameDisplayLayout() {
-    document.getElementById('inputtext').style.display = 'none'
-    document.getElementById('slowMoImage').style.opacity = '0.3'
-    document.getElementById('freezeImage').style.opacity = '0.3'
-    document.getElementById('frenzyImage').style.opacity = '0.3'
-    document.getElementById('boosterImages').style.display = 'none'
-}
-
-function showhideresults() {
-    const failureTable = document.getElementById('failureTableDiv')
-    const successTable = document.getElementById('successTableDiv')
-    if (failureTable.style.display === 'block') {
-        failureTable.style.display = 'none'
-        successTable.style.display = 'block'
-    } else {
-        failureTable.style.display = 'block'
-        successTable.style.display = 'none'
-    }
-}
-
 function imagechange(hoverID) {
     document.getElementById(hoverID).src = '/thegame/buttons/' + hoverID + 'flipped.png'
 }
@@ -91,19 +71,14 @@ function settingsDisplay() {
     }
 }
 
-let totalLevels = totalLevelsForGame
-// colouring buttons
-for (let i = 0; i < totalLevels; i++)
-if (perfectStates[i] == 1) {
-  // document.getElementById('levelBtn'+(i+1)).classList.add('easy-shadow');
-  // document.getElementById('levelBtn'+(i+1)).style.borderColor = 'rgba(0,0,0,0)';
-} else if (perfectStates[i] == 2) {
-document.getElementById('levelBtn' + (i + 1)).classList.add('normal-shadow');
-document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
-} else if (perfectStates[i] == 3) {
-document.getElementById('levelBtn' + (i + 1)).classList.add('hard-shadow');
-document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
-} else if (perfectStates[i] == 4) {
-document.getElementById('levelBtn' + (i + 1)).classList.add('nightmare-shadow');
-document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
-}
+function showhideresults() {
+    const failureTable = document.getElementById('failureTableDiv')
+    const successTable = document.getElementById('successTableDiv')
+    if (failureTable.style.display === 'block') {
+        failureTable.style.display = 'none'
+        successTable.style.display = 'block'
+    } else {
+        failureTable.style.display = 'block'
+        successTable.style.display = 'none'
+    }
+  }

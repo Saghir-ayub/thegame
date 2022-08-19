@@ -68,3 +68,41 @@ function setButtonColours() {
         }
     }
 }
+
+function modalDisplay() {
+    var modal = document.getElementById('statisticsModal');
+    modal.style.display = 'block';
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+}
+
+function settingsDisplay() {
+    var modal = document.getElementById('settingsModal');
+    modal.style.display = 'block';
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+}
+
+// colouring buttons
+for (let i = 0; i < totalLevelsForGame; i++)
+if (perfectStates[i] == 1) {
+  // document.getElementById('levelBtn'+(i+1)).classList.add('easy-shadow');
+  // document.getElementById('levelBtn'+(i+1)).style.borderColor = 'rgba(0,0,0,0)';
+} else if (perfectStates[i] == 2) {
+document.getElementById('levelBtn' + (i + 1)).classList.add('normal-shadow');
+document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
+} else if (perfectStates[i] == 3) {
+document.getElementById('levelBtn' + (i + 1)).classList.add('hard-shadow');
+document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
+} else if (perfectStates[i] == 4) {
+document.getElementById('levelBtn' + (i + 1)).classList.add('nightmare-shadow');
+document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
+}

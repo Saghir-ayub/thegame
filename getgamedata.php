@@ -1,14 +1,5 @@
 <?php
   $db = new SQLite3('enemyvalues.sq3');
-
-
-
-
-
-
-
-
-
   $sql_Diff = "SELECT Difficulty FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
   $sql_Mode = "SELECT Gamemode FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
   $sql = "SELECT * FROM ChineseWords";

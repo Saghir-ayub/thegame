@@ -226,32 +226,26 @@
       <iframe src=http://localhost/thegame/statistics.php style="height:400px"></iframe>
     </div>
   </div>
-  <!-- echoing database values into variables -->
+  <!-- variables used by homepage.php and main.js -->
   <script type="text/javascript">
-    let passWordID = <?php echo json_encode($wordID); ?>;
-    let passHanzi = <?php echo json_encode($hanziChars); ?>;
-    let passPinyin = <?php echo json_encode($pinyinChars); ?>;
-    let passEnglish = <?php echo json_encode($englishChars); ?>;
-    let levelScores = <?php echo json_encode($levelScores); ?>;
     let perfectStates = <?php echo json_encode($perfectStates); ?>;
     let totalLevelsForGame = <?php echo json_encode($totalLevelsForGame[0]); ?>;
-    let difficulty = <?php echo json_encode($currentDifficultyValue); ?>;
-    let gameMode = <?php echo json_encode($currentGamemode[0]); ?>;
+    let levelScores = <?php echo json_encode($levelScores); ?>;
   </script>
 
   <script>
     // colouring buttons
     for (let i = 0; i < totalLevelsForGame; i++)
-      if (perfectStates[i] == 1) {
+      if (perfectStates[i] === 1) {
         // document.getElementById('levelBtn'+(i+1)).classList.add('easy-shadow');
         // document.getElementById('levelBtn'+(i+1)).style.borderColor = 'rgba(0,0,0,0)';
-      } else if (perfectStates[i] == 2) {
+      } else if (perfectStates[i] === 2) {
       document.getElementById('levelBtn' + (i + 1)).classList.add('normal-shadow');
       document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
-    } else if (perfectStates[i] == 3) {
+    } else if (perfectStates[i] === 3) {
       document.getElementById('levelBtn' + (i + 1)).classList.add('hard-shadow');
       document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
-    } else if (perfectStates[i] == 4) {
+    } else if (perfectStates[i] === 4) {
       document.getElementById('levelBtn' + (i + 1)).classList.add('nightmare-shadow');
       document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
     }

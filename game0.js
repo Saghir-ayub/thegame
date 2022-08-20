@@ -3,7 +3,7 @@ window.onload = function () {
   if (reloading) {
     sessionStorage.removeItem('reloading')
     restartLevel()
-  } 
+  }
 }
 
 function restartLevel() {
@@ -22,18 +22,33 @@ function game(minimumWord, maximumWord) {
   localStorage.setItem('levelMaximum', maximumWord)
 
   // pulling database variables
-  // let difficultyLevelTest
-  // var getUserRequest=new XMLHttpRequest();
-  // getUserRequest.onreadystatechange=function() {
-  //   if (this.readyState==4 && this.status==200) {
-  //     let gameStartVariables = this.responseText;
-  //     const parsedGameStartVariables = JSON.parse(gameStartVariables)
-  //     difficultyLevelTest = parsedGameStartVariables.currentDifficulty
-  //   }
-  // }
-  
-  // getUserRequest.open("GET","getgamedata.php",true);
-  // getUserRequest.send(); 
+  let difficultyLevel
+  let gameMode
+  let passWordID
+  let passHanzi
+  let passPinyin
+  let passEnglish
+  let levelSeperatorPoint
+  let groupSeperatorPoint
+  const getUserRequest = new XMLHttpRequest()
+  getUserRequest.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      const gameStartVariables = this.responseText
+      const parsedGameStartVariables = JSON.parse(gameStartVariables)
+      difficultyLevel = parsedGameStartVariables.currentDifficulty
+      gameMode = parsedGameStartVariables.gamemode
+      passWordID = parsedGameStartVariables.wordID
+      passHanzi = parsedGameStartVariables.hanziChars
+      passPinyin = parsedGameStartVariables.pinyinChars
+      passEnglish = parsedGameStartVariables.englishChars
+      levelSeperatorPoint = parsedGameStartVariables.levelSeperatorPoints
+      groupSeperatorPoint = parsedGameStartVariables.groupSeperatorPoints
+    }
+  }
+
+  //false so it doesnt show undefined at start
+  getUserRequest.open('GET', 'getgamedata.php', false)
+  getUserRequest.send()
 
   // displaying game canvas and input bar
   const levelChoice = (minimumWord / 25) + 1
@@ -73,8 +88,8 @@ function game(minimumWord, maximumWord) {
   const practiceTimerLength = 10 * (1000 / timeStep) // seconds on LHS * (ms->sec convert)
   let practiceTimeRemaining = practiceTimerLength
   let score = 0
-  const difficultyLevel = difficulty
   let arrNumber = -1
+  let boostArrNumber = 0
   let roundCount = (maximumWord - minimumWord) > 30 ? 2600 : 0// === fix this ===
   let initialSpeed = 3 // === try convert to WPM ===
   const initialEnemySpawnRate = 100 //= ==need to convert to seconds ===
@@ -192,7 +207,7 @@ function game(minimumWord, maximumWord) {
         gameState = 'paused'
         Pause()
       } else if (gameState === 'finish') {
-        return
+
       } else {
         gameState = 'play'
         document.getElementById('pauseinterface').style.display = 'none'
@@ -430,11 +445,11 @@ function game(minimumWord, maximumWord) {
       }
       this.maxDy = 1
       this.passfail = ''
-      BoostarrNumber = Math.floor(Math.random() * hsk1Booster.length)
-      this.wordID = wordIDBooster[BoostarrNumber]
-      this.textb = hsk1Booster[BoostarrNumber]
-      this.textpin = hsk1pinBooster[BoostarrNumber]
-      this.texteng = hsk1engBooster[BoostarrNumber]
+      boostArrNumber = Math.floor(Math.random() * hsk1Booster.length)
+      this.wordID = wordIDBooster[boostArrNumber]
+      this.textb = hsk1Booster[boostArrNumber]
+      this.textpin = hsk1pinBooster[boostArrNumber]
+      this.texteng = hsk1engBooster[boostArrNumber]
     }
     this.init()
 
@@ -700,9 +715,9 @@ function game(minimumWord, maximumWord) {
     // Do it all again in a little while
     clearTimeout(cmTID)
     // Only animate if the game isn't over
-    if (gameState == 'play') {
+    if (gameState === 'play') {
       cmTID = setTimeout(updateAll, timeStep)
-    } else if (gameState == 'finish') {
+    } else if (gameState === 'finish') {
       endGameresults()
     }
   }
@@ -717,7 +732,7 @@ function game(minimumWord, maximumWord) {
       const hr = new XMLHttpRequest()
       let url = 'updateLevelScore.php?level=' + levelChoice + '&mode=' + gameMode
       if (liveslost === 0) {
-        url = 'updateLevelScore.php?diff=' + difficulty + '&level=' + levelChoice + '&mode=' + gameMode
+        url = 'updateLevelScore.php?diff=' + difficultyLevel + '&level=' + levelChoice + '&mode=' + gameMode
       }
       hr.open('POST', url, true)
       hr.send()

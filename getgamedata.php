@@ -76,7 +76,7 @@
   }
 
   // All variables into a JSON:
-  $arrOfArrays = array('currentDifficulty' => $currentDifficultyValue, 'gamemode' => $currentGamemode,
+  $arrOfArrays = array('currentDifficulty' => $currentDifficultyValue, 'gamemode' => $currentGamemode[0],
   'wordID' => $wordID, 'hanziChars' => $hanziChars, 'pinyinChars' => $pinyinChars,
    'englishChars' => $englishChars, 'levelSeperatorPoints' => $levelSeperatorPoints,
    'groupSeperatorPoints' => $groupSeperatorPoints);

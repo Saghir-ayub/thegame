@@ -532,7 +532,7 @@ function game (minimumWord, maximumWord) {
         if (currentLives <= 0) {
           gameState = 'finish'
           gameResult = 'fail'
-        } else if (enemiesAlive === 0 && numEnemies >= 1) {
+        } else if (enemiesAlive === 0 && numEnemies >= 40) {
           gameState = 'finish'
           gameResult = 'pass'
         }

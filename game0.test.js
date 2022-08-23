@@ -1,5 +1,5 @@
 import { jest, describe, it, expect, beforeEach, afterAll } from '@jest/globals'
-import { game, Booster, Enemy, restartLevel, endgameDisplayLayout } from './gameNew.js'
+import { Game, Booster, Enemy, restartLevel, endgameDisplayLayout } from './gameNew.js'
 import { main } from './index.js'
 
 document.body.innerHTML = `<canvas id='pane'></canvas><input id="inputtext">

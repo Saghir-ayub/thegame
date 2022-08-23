@@ -99,7 +99,8 @@
       game,
       restartLevel,
       endgameDisplayLayout,
-    } from "./game0.js"
+      Booster
+    } from "./gameNew.js"
     const allLevels = document.getElementsByClassName("regular-levels")
     for (let i = 1; i < allLevels.length; i++) {
       let mini = 25 * (i - 1)

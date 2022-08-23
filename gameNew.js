@@ -15,7 +15,6 @@ function restartLevel() {
 }
 
 function game(minimumWord, maximumWord) {
-    dataTable: () => { return 'real data' }
     // removing any stored minimumWord
     if (typeof window !== 'undefined') {
         localStorage.removeItem('levelMinimum')
@@ -107,6 +106,9 @@ function game(minimumWord, maximumWord) {
     let currentLives = 0 // lives-liveslost
     let correctWords = 0 // based on words right
     let enemiesAlive = 0 // current alive enemies
+    const enemies = [] // enemy array to be filled 
+    let initialEnemies = 1 // starting number of enemies
+    let numEnemies = initialEnemies // increments
     const practiceTimerLength = 10 * (1000 / timeStep) // seconds on LHS * (ms->sec convert)
     let practiceTimeRemaining = practiceTimerLength
     let score = 0
@@ -125,9 +127,9 @@ function game(minimumWord, maximumWord) {
     let wordStreak = 0
     let boostTimer = 0 // no boost active at start
     const boostLength = 10 // seconds
-    const firstBoostCombo = 5
-    const secondBoostCombo = 10
-    const thirdBoostCombo = 15
+    const firstBoostCombo = 10
+    const secondBoostCombo = 20
+    const thirdBoostCombo = 30
     const boosters = [] // booster array
     let numBoosters = 0 // starting # of boosters
 
@@ -309,126 +311,20 @@ function game(minimumWord, maximumWord) {
         }
     }
 
-    function Enemy() {
-        this.isize = 30
-        this.maxDy = initialSpeed
-
-        this.init = function () {
-            this.size = this.isize
-            const s = this.size
-            this.x = Math.random() * (w * 0.8) + (w * 0.1)
-            this.y = s / 2
-            const maxDy = this.maxDy
-            this.dy = initialSpeed
-            this.r = 255
-            this.g = 255
-            this.b = 255
-            this.opac = 1
-            // this.maxDy = 3;
-            this.passfail = ''
-            if (roundCount < (hsk1.length)) {
-                arrNumber += 1
-                roundCount += 1
-            } else { arrNumber = Math.floor(Math.random() * hsk1.length) }
-            this.wordID = wordID[arrNumber]
-            this.textb = hsk1[arrNumber]
-            this.textpin = hsk1pin[arrNumber]
-            this.texteng = hsk1eng[arrNumber]
-            // practice mode overrides
-            if (gameMode === 'Practice') {
-                this.x = w / 2
-                this.y = h / 2
-                initialSpeed = 0
-                this.size = s * 3
-                practiceTimeRemaining = practiceTimerLength
-            }
-        }
-        this.init()
-
-        this.move = function () {
-            const s = this.size
-            // if (this.y > h){
-            //     this.init();
-            // }
-            this.y += this.dy
-            if (this.y + s / 2 > h && this.passfail === '') {
-                this.passfail = 'fail'
-                this.size = 0
-                wordStreak = 0
-            }
-            if (gameMode === 'Practice' && practiceTimeRemaining <= 0 && this.passfail === '') {
-                this.passfail = 'fail'
-                wordStreak = 0
-                practiceTimeRemaining = practiceTimerLength / 2
-            }
-        }
-
-        this.draw = function () {
-            if (userInputText === this.textb && this.passfail === '') {
-                // this.size = 0;
-                score += 1
-                wordStreak += 1
-                this.passfail = 'pass'
-                if (gameMode !== 'Practice') {
-                    databaseScoreUpdate(this.wordID)
-                }
-                switch (gameMode) {
-                    case 'Freestyle':
-                    case 'Endurance':
-                        comboBoosterCheck()
-                        break
-                    case 'Practice':
-                        practiceTimeRemaining = 0
-                        break
-                }
-            }
-            // Death Animation
-            if (this.passfail === 'pass' && this.opac >= 0) {
-                this.size -= 1
-                this.opac = Math.max(0, this.opac - 0.1)
-                this.y -= this.dy
-            }
-            const s = this.size
-            const x = this.x
-            const y = this.y
-            const r = this.r
-            const g = this.g
-            const b = this.b
-            const opac = this.opac
-            let te = this.textb
-            let teng
-
-            if (this.passfail === 'fail' && gameMode === 'Practice' && this.opac > 0) {
-                te = this.textpin
-                teng = this.texteng
-                if (practiceTimeRemaining <= 0) {
-                    this.opac = 0
-                }
-            }
-
-            if (opac <= 0) { return }
-
-            c.save()
-            c.translate(x, y)
-            c.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + opac + ')'
-            c.font = s + 'pt sans-serif'
-            c.textAlign = 'center'
-            if (this.passfail === 'pass') { c.lineWidth = 0 } else { c.lineWidth = 3 };
-            c.strokeText(te, -s / 2, s / 10)
-            c.fillText(te, -s / 2, s / 10)
-            if (teng) {
-                c.save()
-                c.font = s / 3 + 'pt sans-serif'
-                c.strokeText(teng, -s / 2, s * 1.3)
-                c.fillText(teng, -s / 2, s * 1.3)
-                c.restore()
-            }
-            c.restore()
-        }
-    }
-
     function EnemySpawn() {
-        const f = new Enemy()
+        if (roundCount < (hsk1.length)) {
+            arrNumber += 1
+            roundCount += 1
+        } else { arrNumber = Math.floor(Math.random() * hsk1.length) }
+        const f = new Enemy(gameMode, initialSpeed, c, w, wordID[arrNumber], hsk1[arrNumber], hsk1pin[arrNumber], hsk1eng[arrNumber])
+        if (gameMode === 'Practice') {
+            f.x = w / 2
+            f.y = h / 2
+            initialSpeed = 0
+            f.dy = initialSpeed
+            f.size = f.size * 3
+            practiceTimeRemaining = practiceTimerLength
+        }
         numEnemies += 1
         enemies.push(f)
     }
@@ -511,11 +407,9 @@ function game(minimumWord, maximumWord) {
     }
 
     // starting number of enemies and starting array to be added to later
-    const enemies = []
-    let numEnemies = 1
-    for (let i = 0; i < numEnemies; i++) {
-        const e = new Enemy()
-        enemies.push(e)
+    for (let i = 0; i < initialEnemies; i++) {
+        EnemySpawn()
+        numEnemies -= 1
     }
 
     function updateAll() {
@@ -532,6 +426,16 @@ function game(minimumWord, maximumWord) {
                 enemy.dy = 0
             }
             enemy.move()
+            if (enemy.y + enemy.size / 2 > h && enemy.passfail === '') {
+                enemy.passfail = 'fail'
+                enemy.size = 0
+                wordStreak = 0
+            }
+            if (gameMode === 'Practice' && practiceTimeRemaining <= 0 && enemy.passfail === '') {
+                enemy.passfail = 'fail'
+                wordStreak = 0
+                practiceTimeRemaining = practiceTimerLength / 2
+            }
         }
 
         // Move boosters
@@ -557,9 +461,29 @@ function game(minimumWord, maximumWord) {
         correctWords = 0
         enemiesAlive = 0
 
-        // Redraw everything
+        // Redraw enemies and do checks
         for (let i = 0; i < numEnemies; i++) {
             enemies[i].draw()
+            if (userInputText === enemies[i].textb && enemies[i].passfail === '') {
+                score += 1
+                wordStreak += 1
+                enemies[i].passfail = 'pass'
+                if (enemies[i].type !== 'Practice') {
+                    databaseScoreUpdate(enemies[i].wordID)
+                }
+                switch (enemies[i].type) {
+                    case 'Freestyle':
+                    case 'Endurance':
+                        comboBoosterCheck()
+                        break
+                    case 'Practice':
+                        practiceTimeRemaining = 0
+                        break
+                }
+            }
+            if (enemies[i].type === 'Practice' && practiceTimeRemaining <= 0) {
+                enemies[i].opac = 0
+            }
             if (enemies[i].passfail === 'fail') {
                 liveslost += 1
             } else if (enemies[i].passfail === 'pass') {
@@ -569,7 +493,7 @@ function game(minimumWord, maximumWord) {
             }
         }
 
-        // Redraw boosters
+        // Redraw boosters and do checks
         for (let i = 0; i < numBoosters; i++) {
             boosters[i].draw()
             if (userInputText === boosters[i].textb && boosters[i].passfail === '') {
@@ -762,6 +686,79 @@ function endgameDisplayLayout() {
     document.getElementById('boosterImages').style.display = 'none'
 }
 
+function Enemy(gameMode, initialSpeed, c, w, wordID, hsk1, hsk1pin, hsk1eng) {
+    this.isize = 30
+    this.maxDy = initialSpeed
+
+    this.init = function () {
+        this.type = gameMode
+        this.size = this.isize
+        const s = this.size
+        this.x = Math.random() * (w * 0.8) + (w * 0.1)
+        this.y = s / 2
+        const maxDy = this.maxDy
+        this.dy = initialSpeed
+        this.r = 255
+        this.g = 255
+        this.b = 255
+        this.opac = 1
+        // this.maxDy = 3;
+        this.passfail = ''
+        this.wordID = wordID
+        this.textb = hsk1
+        this.textpin = hsk1pin
+        this.texteng = hsk1eng
+    }
+    this.init()
+
+    this.move = function () {
+        const s = this.size
+        this.y += this.dy
+    }
+
+    this.draw = function () {
+        // Death Animation
+        if (this.passfail === 'pass' && this.opac >= 0) {
+            this.size -= 1
+            this.opac = Math.max(0, this.opac - 0.1)
+            this.y -= this.dy
+        }
+        const s = this.size
+        const x = this.x
+        const y = this.y
+        const r = this.r
+        const g = this.g
+        const b = this.b
+        const opac = this.opac
+        let te = this.textb
+        let teng
+
+        if (this.passfail === 'fail' && this.type === 'Practice' && this.opac > 0) {
+            te = this.textpin
+            teng = this.texteng
+        }
+
+        if (opac <= 0) { return }
+
+        c.save()
+        c.translate(x, y)
+        c.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + opac + ')'
+        c.font = s + 'pt sans-serif'
+        c.textAlign = 'center'
+        if (this.passfail === 'pass') { c.lineWidth = 0 } else { c.lineWidth = 3 };
+        c.strokeText(te, -s / 2, s / 10)
+        c.fillText(te, -s / 2, s / 10)
+        if (teng) {
+            c.save()
+            c.font = s / 3 + 'pt sans-serif'
+            c.strokeText(teng, -s / 2, s * 1.3)
+            c.fillText(teng, -s / 2, s * 1.3)
+            c.restore()
+        }
+        c.restore()
+    }
+}
+
 function Booster(boosterType, c, w, h, wordIDBooster, hsk1Booster, hsk1pinBooster, hsk1engBooster) {
     this.isize = 30
     this.maxDy = 1
@@ -844,4 +841,4 @@ function Booster(boosterType, c, w, h, wordIDBooster, hsk1Booster, hsk1pinBooste
     }
 }
 
-export { game, restartLevel, endgameDisplayLayout, Booster }
+export { game, restartLevel, endgameDisplayLayout, Booster, Enemy }

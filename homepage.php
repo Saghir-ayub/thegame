@@ -99,7 +99,8 @@
       game,
       restartLevel,
       endgameDisplayLayout,
-      Booster
+      Booster,
+      Enemy
     } from "./gameNew.js"
     const allLevels = document.getElementsByClassName("regular-levels")
     for (let i = 1; i < allLevels.length; i++) {

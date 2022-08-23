@@ -11,10 +11,10 @@ if (typeof window !== 'undefined') {
 function restartLevel() {
     const levelMinimum = localStorage.getItem('levelMinimum')
     const levelMaximum = localStorage.getItem('levelMaximum')
-    game(levelMinimum, levelMaximum)
+    Game(levelMinimum, levelMaximum)
 }
 
-function game(minimumWord, maximumWord) {
+function Game(minimumWord, maximumWord) {
     // removing any stored minimumWord
     if (typeof window !== 'undefined') {
         localStorage.removeItem('levelMinimum')
@@ -54,14 +54,6 @@ function game(minimumWord, maximumWord) {
     // false so it doesnt show undefined at start
     getUserRequest.open('GET', 'getgamedata.php', false)
     getUserRequest.send()
-    // }
-    // gameVariables()  // ========== need to fix
-    // let difficultyLevel = "Easy"
-    // let gameMode = "Regular"
-    // let passWordID = []
-    // let passHanzi = []
-    // let passPinyin = []
-    // let passEnglish = []   //this is req for unit test ======
 
     // displaying game canvas and input bar
     const levelChoice = (minimumWord / 25) + 1
@@ -167,7 +159,7 @@ function game(minimumWord, maximumWord) {
     const hsk1engBooster = passPinyin.slice(0, maximumWord)
 
     // intro animation
-    function Introduction() {
+    function introduction() {
         clearTimeout(cmTID)
 
         c.save()
@@ -181,7 +173,7 @@ function game(minimumWord, maximumWord) {
         c.restore()
         if (introTimer > 0) {
             introTimer -= 0.2
-            cmTID = setTimeout(Introduction, timeStep)
+            cmTID = setTimeout(introduction, timeStep)
         } else {
             // display game and start running
             document.getElementById('inputtext').style.display = 'block'
@@ -191,7 +183,7 @@ function game(minimumWord, maximumWord) {
             updateAll()
         }
     }
-    Introduction()
+    introduction()
 
     // text box related variables
     let userInputText = ''
@@ -841,4 +833,4 @@ function Booster(boosterType, c, w, h, wordIDBooster, hsk1Booster, hsk1pinBooste
     }
 }
 
-export { game, restartLevel, endgameDisplayLayout, Booster, Enemy }
+export { Game, restartLevel, endgameDisplayLayout, Booster, Enemy }

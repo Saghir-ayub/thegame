@@ -96,7 +96,7 @@
   <!-- module version new -->
   <script type="module">
     import {
-      game,
+      Game,
       restartLevel,
       endgameDisplayLayout,
       Booster,
@@ -107,7 +107,7 @@
       let mini = 25 * (i - 1)
       let maxi = 25 + 25 * (i - 1)
       allLevels[i - 1].addEventListener('click', function() {
-        game(mini, maxi)
+        new Game(mini, maxi)
       })
     }
   </script>

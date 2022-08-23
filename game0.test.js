@@ -24,10 +24,9 @@ describe("game", () => {
     const gameMode = ['Regular', 'Beat The Clock', 'Race To Finish', 'Endurance', 'Practice']
     const initialSpeed = 3
 
+    const booster = new Booster(boosterTypes[0], c,
+        w, h, wordID, foreignWord, romanWord, engWord)
     describe("booster", () => {
-        const booster = new Booster(boosterTypes[0], c,
-            w, h, wordID, foreignWord, romanWord, engWord)
-
         it("should initialize values with init() function", () => {
             expect(booster.wordID).toBe(20)
         })
@@ -79,4 +78,12 @@ describe("game", () => {
             expect(enemy.size).toBe(enemy.isize - 1)
         })
     })
+
+    // describe("game", () => {
+    //     it("should initialize game", () => {
+    //         const newGame = new game(0,25)
+    //         newGame.updateAll = jest.fn()
+    //         expect(newGame.updateAll).toBeCalled()
+    //     })
+    // })
 })

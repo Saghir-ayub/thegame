@@ -1,5 +1,5 @@
 import { jest, describe, it, expect, beforeEach, afterAll } from '@jest/globals'
-import { Game, Booster, Enemy, spawnEnemyCheck, restartLevel, endgameDisplayLayout } from './gameNew.js'
+import { Game, Booster, Enemy, spawnEnemyCheck, isGameOver, restartLevel, endgameDisplayLayout } from './gameNew.js'
 import { main } from './index.js'
 
 document.body.innerHTML = `<canvas id='pane'></canvas><input id="inputtext">
@@ -37,7 +37,7 @@ describe("game", () => {
         })
 
         it("booster death should be registered", () => {
-            booster.passfail = 'pass'            
+            booster.passfail = 'pass'
             booster.draw()
             expect(booster.size).toBe(booster.isize - 1 / 3)
         })
@@ -73,7 +73,7 @@ describe("game", () => {
         })
 
         it("enemy death should be registered", () => {
-            enemy.passfail = 'pass'            
+            enemy.passfail = 'pass'
             enemy.draw()
             expect(enemy.size).toBe(enemy.isize - 1 / 3)
         })
@@ -81,15 +81,40 @@ describe("game", () => {
 
     describe("enemy spawn checker", () => {
         const enemyTypes = ['Regular', 'Practice', 'Race To Finish', '']
-        for(const type of enemyTypes){
+        for (const type of enemyTypes) {
             it(`should return true for ${type} enemy`, () => {
-                const enemyCheck = spawnEnemyCheck(type,40,30,30,0,0)
+                const enemyCheck = spawnEnemyCheck(type, 40, 30, 30, 0, 0)
                 expect(enemyCheck).toBe(true)
             })
 
             it(`should return false for ${type} enemy`, () => {
-                const enemyCheck = spawnEnemyCheck(type,30,40,30,1,1)
+                const enemyCheck = spawnEnemyCheck(type, 30, 40, 30, 1, 1)
                 expect(enemyCheck).toBe(false)
+            })
+        }
+    })
+
+    describe("gameover checks", () => {
+        const gameModesWithFail = ['Regular', 'Beat The Clock', 'Endurance', 'Practice', 'Race To Finish']
+        for (const mode of gameModesWithFail) {
+            it(`should change state to finish and result to fail for ${mode} game mode`, () => {
+                const gameOver = isGameOver(mode, 0)
+                expect(gameOver.gameState).toBe('finish')
+                expect(gameOver.gameResult).toBe('fail')
+            })
+
+            it(`should return false for ${mode} game mode when condition not met`, () => {
+                const gameOver = isGameOver(mode, 1)
+                expect(gameOver).toBe(false)
+            })
+        }
+
+        const gameModesWithPass = ['Regular', 'Beat The Clock', 'Practice', 'Race To Finish']
+        for (const mode of gameModesWithPass) {
+            it(`should change state to finish and result to pass for ${mode} game mode`, () => {
+                const gameOver = isGameOver(mode, 10, 0, 40, 0, 40)
+                expect(gameOver.gameState).toBe('finish')
+                expect(gameOver.gameResult).toBe('pass')
             })
         }
     })

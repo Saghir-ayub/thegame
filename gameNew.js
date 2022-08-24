@@ -78,7 +78,6 @@ function Game(minimumWord, maximumWord) {
     let gameResult = ''
     const FPS = 60 // In FPS
     let introTimer = 2 * FPS // seconds
-    let cmTID
 
 
     if (typeof window !== 'undefined') {
@@ -160,8 +159,6 @@ function Game(minimumWord, maximumWord) {
 
     // intro animation
     function introduction() {
-        clearTimeout(cmTID)
-
         c.save()
         c.fillStyle = 'rgb(255,255,255)'
         c.fillRect(0, 0, w, h)
@@ -283,14 +280,6 @@ function Game(minimumWord, maximumWord) {
         window.location.href = '/thegame/homepage.php'
     })
 
-    function databaseScoreUpdate(dataName) {
-        const data = dataName
-        const hr = new XMLHttpRequest()
-        const url = 'updateScore.php?q='
-        hr.open('POST', url + data, true)
-        hr.send()
-    }
-
     function comboBoosterCheck() {
         if (wordStreak % firstBoostCombo === 0) {
             BoosterSpawn('slowmo')
@@ -326,47 +315,6 @@ function Game(minimumWord, maximumWord) {
         const b = new Booster(typeOfBooster, c, w, h, wordIDBooster[boostArrNumber], hsk1Booster[boostArrNumber], hsk1pinBooster[boostArrNumber], hsk1engBooster[boostArrNumber])
         numBoosters += 1
         boosters.push(b)
-    }
-
-    function IsGameOver() {
-        switch (gameMode) {
-            case 'Regular':
-                if (currentLives <= 0) {
-                    gameState = 'finish'
-                    gameResult = 'fail'
-                } else if (enemiesAlive === 0 && numEnemies >= 40) {
-                    gameState = 'finish'
-                    gameResult = 'pass'
-                }
-                break
-            case 'Beat The Clock':
-                if (currentLives <= 0) {
-                    gameState = 'finish'
-                    gameResult = 'fail'
-                } else if (gameClock <= 0) {
-                    gameState = 'finish'
-                    gameResult = 'pass'
-                }
-                break
-            case 'Endurance':
-                if (currentLives <= 0) {
-                    gameState = 'finish'
-                    gameResult = 'fail'
-                }
-                break
-            case 'Practice':
-            case 'Race To Finish':
-                if (currentLives <= 0) {
-                    gameState = 'finish'
-                    gameResult = 'fail'
-                } else if (score >= 25) {
-                    gameState = 'finish'
-                    gameResult = 'pass'
-                }
-                break
-            case 'Freestyle':
-                break
-        }
     }
 
     // starting number of enemies and starting array to be added to later
@@ -505,16 +453,20 @@ function Game(minimumWord, maximumWord) {
         }
 
         // check if conditions met to spawn enemy
-        if(spawnEnemyCheck(gameMode, respawnTimer, initialEnemySpawnRate, numEnemies, enemiesAlive, practiceTimeRemaining)){
+        if (spawnEnemyCheck(gameMode, respawnTimer, initialEnemySpawnRate, numEnemies, enemiesAlive, practiceTimeRemaining)) {
             EnemySpawn()
             respawnTimer = 0
-        }else if(gameMode === 'Practice'){
+        } else if (gameMode === 'Practice') {
             practiceTimeRemaining -= 1
         }
 
         // check if the game is over
         currentLives = lives - liveslost
-        IsGameOver()
+        let gameOverResult = isGameOver(gameMode, currentLives, enemiesAlive, numEnemies, gameClock, score)
+        if(gameOverResult){
+            gameState = gameOverResult.gameState
+            gameResult = gameOverResult.gameResult
+        }
 
         // Show the score/clock/lives/gamemode/level on the screen
         c.save()
@@ -541,7 +493,6 @@ function Game(minimumWord, maximumWord) {
         // c.fillText('Combo Timer: '+boostTimer, w*0.2,30);
         c.restore()
         // Do it all again in a little while
-        clearTimeout(cmTID)
         // Only animate if the game isn't over
         if (gameState === 'play') {
             window.requestAnimationFrame(updateAll)
@@ -687,7 +638,7 @@ function Enemy(gameMode, initialSpeed, c, w, wordID, hsk1, hsk1pin, hsk1eng) {
     this.draw = function () {
         // Death Animation
         if (this.passfail === 'pass' && this.opac >= 0) {
-            this.size -= 1/3
+            this.size -= 1 / 3
             this.opac = Math.max(0, this.opac - 0.03)
             this.y -= this.dy
         }
@@ -729,7 +680,7 @@ function Enemy(gameMode, initialSpeed, c, w, wordID, hsk1, hsk1pin, hsk1eng) {
 
 function Booster(boosterType, c, w, h, wordIDBooster, hsk1Booster, hsk1pinBooster, hsk1engBooster) {
     this.isize = 30
-    this.maxDy = 1/3
+    this.maxDy = 1 / 3
     this.type = boosterType
 
     this.init = function () {
@@ -781,7 +732,7 @@ function Booster(boosterType, c, w, h, wordIDBooster, hsk1Booster, hsk1pinBooste
     this.draw = function () {
         // Death Animation
         if (this.passfail === 'pass' && this.opac >= 0) {
-            this.size -= 1/3
+            this.size -= 1 / 3
             this.opac = Math.max(0, this.opac - 0.03)
             this.y -= this.dy
         }
@@ -836,4 +787,63 @@ function spawnEnemyCheck(gameMode, respawnTimer, initialEnemySpawnRate, numEnemi
     return false
 }
 
-export { Game, restartLevel, endgameDisplayLayout, spawnEnemyCheck, Booster, Enemy }
+function isGameOver(gameMode, currentLives, enemiesAlive, numEnemies, gameClock, score) {
+    let gameState, gameResult
+    switch (gameMode) {
+        case 'Regular':
+            if (currentLives <= 0) {
+                gameState = 'finish'
+                gameResult = 'fail'
+                return {gameState, gameResult}
+            } else if (enemiesAlive === 0 && numEnemies >= 40) {
+                gameState = 'finish'
+                gameResult = 'pass'
+                return {gameState, gameResult}
+            }
+            break
+        case 'Beat The Clock':
+            if (currentLives <= 0) {
+                gameState = 'finish'
+                gameResult = 'fail'
+                return {gameState, gameResult}
+            } else if (gameClock <= 0) {
+                gameState = 'finish'
+                gameResult = 'pass'
+                return {gameState, gameResult}
+            }
+            break
+        case 'Endurance':
+            if (currentLives <= 0) {
+                gameState = 'finish'
+                gameResult = 'fail'
+                return {gameState, gameResult}
+            }
+            break
+        case 'Practice':
+        case 'Race To Finish':
+            if (currentLives <= 0) {
+                gameState = 'finish'
+                gameResult = 'fail'
+                return {gameState, gameResult}
+            } else if (score >= 25) {
+                gameState = 'finish'
+                gameResult = 'pass'
+                return {gameState, gameResult}
+            }
+            break
+        case 'Freestyle':
+            break
+    }
+    return false
+}
+
+
+function databaseScoreUpdate(dataName) {
+    const data = dataName
+    const hr = new XMLHttpRequest()
+    const url = 'updateScore.php?q='
+    hr.open('POST', url + data, true)
+    hr.send()
+}
+
+export { Game, restartLevel, endgameDisplayLayout, spawnEnemyCheck, isGameOver, Booster, Enemy }

@@ -82,7 +82,6 @@ describe("game", () => {
     // describe("game", () => {
     //     it("should initialize game", () => {
     //         const newGame = new game(0,25)
-    //         newGame.updateAll = jest.fn()
     //         expect(newGame.updateAll).toBeCalled()
     //     })
     // })

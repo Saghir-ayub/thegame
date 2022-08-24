@@ -26,7 +26,6 @@ function Game(minimumWord, maximumWord) {
     }
 
     // pulling database variables
-    // function gameVariables() {
     let difficultyLevel = "Easy"
     let gameMode = "Regular"
     let passWordID = []
@@ -77,9 +76,10 @@ function Game(minimumWord, maximumWord) {
     let h = c.canvas.height
     let gameState = 'play'
     let gameResult = ''
-    let introTimer = 5 // seconds
+    const FPS = 60 // In FPS
+    let introTimer = 2 * FPS // seconds
     let cmTID
-    const timeStep = 50 // In milliseconds
+
 
     if (typeof window !== 'undefined') {
         function windowResize() {
@@ -101,16 +101,16 @@ function Game(minimumWord, maximumWord) {
     const enemies = [] // enemy array to be filled 
     let initialEnemies = 1 // starting number of enemies
     let numEnemies = initialEnemies // increments
-    const practiceTimerLength = 10 * (1000 / timeStep) // seconds on LHS * (ms->sec convert)
+    const practiceTimerLength = 10 * FPS // seconds on LHS * (ms->sec convert)
     let practiceTimeRemaining = practiceTimerLength
     let score = 0
     let arrNumber = -1
     let boostArrNumber = 0
     let roundCount = (maximumWord - minimumWord) > 30 ? 2600 : 0// === fix this ===
-    let initialSpeed = 3 // === try convert to WPM ===
-    const initialEnemySpawnRate = 100 //= ==need to convert to seconds ===
-    let gameClock = 180 * (1000 / timeStep) // seconds on LHS * (ms->sec convert)
-    const minutesConvertRate = 60 * (1000 / timeStep)
+    let initialSpeed = 1 // === try convert to WPM ===
+    const initialEnemySpawnRate = 5 * FPS //= ==need to convert to seconds ===
+    let gameClock = 180 * FPS // seconds
+    const minutesConvertRate = 60 * FPS
     const secondsConvertRate = minutesConvertRate / 60
     let minutes = gameClock / minutesConvertRate
     let seconds = (gameClock % minutesConvertRate) / secondsConvertRate
@@ -118,7 +118,7 @@ function Game(minimumWord, maximumWord) {
     // combos and boosters
     let wordStreak = 0
     let boostTimer = 0 // no boost active at start
-    const boostLength = 10 // seconds
+    const boostLength = 10 * FPS // seconds 
     const firstBoostCombo = 10
     const secondBoostCombo = 20
     const thirdBoostCombo = 30
@@ -166,14 +166,14 @@ function Game(minimumWord, maximumWord) {
         c.fillStyle = 'rgb(255,255,255)'
         c.fillRect(0, 0, w, h)
         c.textAlign = 'center'
-        c.fillStyle = 'rgba(0,0,0,' + (1 - 1 / Math.max(1, introTimer)) + ')'
+        c.fillStyle = 'rgba(0,0,0,' + (0.2 + introTimer / 120) + ')'
         c.font = '50pt sans-serif'
         c.fillText(gameMode, w * 0.5, h * 0.3)
         c.fillText('Level ' + levelChoice, w * 0.5, h * 0.5)
         c.restore()
         if (introTimer > 0) {
-            introTimer -= 0.2
-            cmTID = setTimeout(introduction, timeStep)
+            introTimer -= 1
+            requestAnimationFrame(introduction)
         } else {
             // display game and start running
             document.getElementById('inputtext').style.display = 'block'
@@ -237,7 +237,7 @@ function Game(minimumWord, maximumWord) {
             event.preventDefault()
             boosterState = 'slowMotionState'
             document.getElementById('slowMoImage').style.opacity = '0.3'
-            boostTimer = boostLength * 20
+            boostTimer = boostLength
             slowMoBooster = false
         }
     })
@@ -248,7 +248,7 @@ function Game(minimumWord, maximumWord) {
             event.preventDefault()
             boosterState = 'freezeMotionState'
             document.getElementById('freezeImage').style.opacity = '0.3'
-            boostTimer = boostLength * 20
+            boostTimer = boostLength
             freezerBooster = false
         }
     })
@@ -259,7 +259,7 @@ function Game(minimumWord, maximumWord) {
             event.preventDefault()
             boosterState = 'frenzyState'
             document.getElementById('frenzyImage').style.opacity = '0.3'
-            boostTimer = boostLength * 20
+            boostTimer = boostLength
             lives += 5
             frenzyBooster = false
         }
@@ -272,7 +272,7 @@ function Game(minimumWord, maximumWord) {
             c.fillStyle = 'rgba(0,0,0,0.5)'
             c.fillRect(0, 0, w, h)
             c.restore()
-        }, timeStep)
+        }, FPS)
     }
 
     const homeBtn = document.getElementById('homebtn')
@@ -568,7 +568,7 @@ function Game(minimumWord, maximumWord) {
         clearTimeout(cmTID)
         // Only animate if the game isn't over
         if (gameState === 'play') {
-            cmTID = setTimeout(updateAll, timeStep)
+            window.requestAnimationFrame(updateAll)
         } else if (gameState === 'finish') {
             endGameresults()
         }
@@ -711,8 +711,8 @@ function Enemy(gameMode, initialSpeed, c, w, wordID, hsk1, hsk1pin, hsk1eng) {
     this.draw = function () {
         // Death Animation
         if (this.passfail === 'pass' && this.opac >= 0) {
-            this.size -= 1
-            this.opac = Math.max(0, this.opac - 0.1)
+            this.size -= 1/3
+            this.opac = Math.max(0, this.opac - 0.03)
             this.y -= this.dy
         }
         const s = this.size
@@ -753,7 +753,7 @@ function Enemy(gameMode, initialSpeed, c, w, wordID, hsk1, hsk1pin, hsk1eng) {
 
 function Booster(boosterType, c, w, h, wordIDBooster, hsk1Booster, hsk1pinBooster, hsk1engBooster) {
     this.isize = 30
-    this.maxDy = 1
+    this.maxDy = 1/3
     this.type = boosterType
 
     this.init = function () {
@@ -806,8 +806,8 @@ function Booster(boosterType, c, w, h, wordIDBooster, hsk1Booster, hsk1pinBooste
     this.draw = function () {
         // Death Animation
         if (this.passfail === 'pass' && this.opac >= 0) {
-            this.size -= 1
-            this.opac = Math.max(0, this.opac - 0.1)
+            this.size -= 1/3
+            this.opac = Math.max(0, this.opac - 0.03)
             this.y -= this.dy
         }
         const s = this.size

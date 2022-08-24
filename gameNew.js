@@ -369,35 +369,6 @@ function Game(minimumWord, maximumWord) {
         }
     }
 
-    function SpawnEnemyCheck() {
-        switch (gameMode) {
-            case 'Regular':
-                if (respawnTimer > initialEnemySpawnRate && numEnemies < 40) {
-                    respawnTimer = 0
-                    EnemySpawn()
-                }
-                break
-            case 'Practice':
-                if (enemiesAlive === 0 && practiceTimeRemaining === 0) {
-                    EnemySpawn()
-                } else {
-                    practiceTimeRemaining -= 1
-                }
-                break
-            case 'Race To Finish':
-                if (enemiesAlive === 0) {
-                    EnemySpawn()
-                }
-                break
-            default:
-                if (respawnTimer > initialEnemySpawnRate) {
-                    respawnTimer = 0
-                    EnemySpawn()
-                }
-                break
-        }
-    }
-
     // starting number of enemies and starting array to be added to later
     for (let i = 0; i < initialEnemies; i++) {
         EnemySpawn()
@@ -534,7 +505,12 @@ function Game(minimumWord, maximumWord) {
         }
 
         // check if conditions met to spawn enemy
-        SpawnEnemyCheck()
+        if(spawnEnemyCheck(gameMode, respawnTimer, initialEnemySpawnRate, numEnemies, enemiesAlive, practiceTimeRemaining)){
+            EnemySpawn()
+            respawnTimer = 0
+        }else if(gameMode === 'Practice'){
+            practiceTimeRemaining -= 1
+        }
 
         // check if the game is over
         currentLives = lives - liveslost
@@ -785,7 +761,6 @@ function Booster(boosterType, c, w, h, wordIDBooster, hsk1Booster, hsk1pinBooste
                 this.g = 255
                 this.b = 255
         }
-        this.maxDy = 1
         this.passfail = ''
         this.wordID = wordIDBooster
         this.textb = hsk1Booster
@@ -833,4 +808,32 @@ function Booster(boosterType, c, w, h, wordIDBooster, hsk1Booster, hsk1pinBooste
     }
 }
 
-export { Game, restartLevel, endgameDisplayLayout, Booster, Enemy }
+function spawnEnemyCheck(gameMode, respawnTimer, initialEnemySpawnRate, numEnemies, enemiesAlive, practiceTimeRemaining) {
+    switch (gameMode) {
+        case 'Regular':
+            if (respawnTimer > initialEnemySpawnRate && numEnemies < 40) {
+                respawnTimer = 0
+                return true
+            }
+            break
+        case 'Practice':
+            if (enemiesAlive === 0 && practiceTimeRemaining === 0) {
+                return true
+            }
+            break
+        case 'Race To Finish':
+            if (enemiesAlive === 0) {
+                return true
+            }
+            break
+        default:
+            if (respawnTimer > initialEnemySpawnRate) {
+                respawnTimer = 0
+                return true
+            }
+            break
+    }
+    return false
+}
+
+export { Game, restartLevel, endgameDisplayLayout, spawnEnemyCheck, Booster, Enemy }

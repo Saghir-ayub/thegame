@@ -1,5 +1,5 @@
 import { jest, describe, it, expect, beforeEach, afterAll } from '@jest/globals'
-import { Game, Booster, Enemy, restartLevel, endgameDisplayLayout } from './gameNew.js'
+import { Game, Booster, Enemy, spawnEnemyCheck, restartLevel, endgameDisplayLayout } from './gameNew.js'
 import { main } from './index.js'
 
 document.body.innerHTML = `<canvas id='pane'></canvas><input id="inputtext">
@@ -39,7 +39,7 @@ describe("game", () => {
         it("booster death should be registered", () => {
             booster.passfail = 'pass'            
             booster.draw()
-            expect(booster.size).toBe(booster.isize - 1)
+            expect(booster.size).toBe(booster.isize - 1 / 3)
         })
 
         it("should be green booster", () => {
@@ -75,14 +75,22 @@ describe("game", () => {
         it("enemy death should be registered", () => {
             enemy.passfail = 'pass'            
             enemy.draw()
-            expect(enemy.size).toBe(enemy.isize - 1)
+            expect(enemy.size).toBe(enemy.isize - 1 / 3)
         })
     })
 
-    // describe("game", () => {
-    //     it("should initialize game", () => {
-    //         const newGame = new game(0,25)
-    //         expect(newGame.updateAll).toBeCalled()
-    //     })
-    // })
+    describe("enemy spawn checker", () => {
+        const enemyTypes = ['Regular', 'Practice', 'Race To Finish', '']
+        for(const type of enemyTypes){
+            it(`should return true for ${type} enemy`, () => {
+                const enemyCheck = spawnEnemyCheck(type,40,30,30,0,0)
+                expect(enemyCheck).toBe(true)
+            })
+
+            it(`should return false for ${type} enemy`, () => {
+                const enemyCheck = spawnEnemyCheck(type,30,40,30,1,1)
+                expect(enemyCheck).toBe(false)
+            })
+        }
+    })
 })

@@ -49,6 +49,15 @@ function setButtonColours () {
   }
 }
 
+function showCustom() {
+  const customGame = document.getElementById('customGame')
+  if(customGame.style.display === 'none'){
+    customGame.style.display = 'block'
+  } else {
+    customGame.style.display = 'none'
+  }
+}
+
 function modalDisplay () {
   const modal = document.getElementById('statisticsModal')
   modal.style.display = 'block'

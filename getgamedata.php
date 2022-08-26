@@ -4,7 +4,7 @@ $sql_Diff = "SELECT Difficulty FROM UserSettings WHERE UserID = 'bubness'"; // N
 $sql_Mode = "SELECT Gamemode FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
 $sql = "SELECT * FROM ChineseWords";
 $sqlTotalLevels = "SELECT COUNT(DISTINCT ChineseWords.Level) FROM ChineseWords"; // NEED FOR PHP
-$sqlLevelSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Level'";
+$sqlLevelSeperator = "SELECT count(*) from ChineseWords GROUP BY ChineseWords.'Level'";
 $sqlGroupSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Group'";
 
 
@@ -56,11 +56,16 @@ while ($singlerow = $result->fetchArray()) {
   array_push($englishChars, $singlerow[3]);
 }
 
-// Level seperator for game levels
+// Words between each level
 while ($singleLevelSeperator = $resultLevelSeperator->fetchArray()) {
   array_push($levelSeperatorPoints, $singleLevelSeperator[0]);
 }
-
+// Level seperator points cumil counting level seperator points
+$levelCaps = array();
+array_push($levelCaps,0);
+for($i = 1; $i <= count($levelSeperatorPoints); $i++){
+    array_push($levelCaps, $levelCaps[$i-1] + $levelSeperatorPoints[$i-1]);
+}
 // Group seperator for game levels
 while ($singleGroupSeperator = $resultGroupSeperator->fetchArray()) {
   array_push($groupSeperatorPoints, $singleGroupSeperator[0]);
@@ -70,7 +75,7 @@ while ($singleGroupSeperator = $resultGroupSeperator->fetchArray()) {
 $arrOfArrays = array(
   'currentDifficulty' => $currentDifficultyValue, 'gamemode' => $currentGamemode[0],
   'wordID' => $wordID, 'hanziChars' => $hanziChars, 'pinyinChars' => $pinyinChars,
-  'englishChars' => $englishChars, 'levelSeperatorPoints' => $levelSeperatorPoints,
+  'englishChars' => $englishChars, 'levelCaps' => $levelCaps,
   'groupSeperatorPoints' => $groupSeperatorPoints
 );
 echo json_encode($arrOfArrays);

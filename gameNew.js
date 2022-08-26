@@ -14,15 +14,15 @@ function restartLevel() {
     Game(levelMinimum, levelMaximum)
 }
 
-function Game(minimumWord, maximumWord) {
-    // removing any stored minimumWord
+function Game(levelStart, levelEnd) {
+    // removing any stored levelStart
     if (typeof window !== 'undefined') {
         localStorage.removeItem('levelMinimum')
         localStorage.removeItem('levelMaximum')
 
-        // storing minimumWord in localstorage for restarts
-        localStorage.setItem('levelMinimum', minimumWord)
-        localStorage.setItem('levelMaximum', maximumWord)
+        // storing levelStart in localstorage for restarts
+        localStorage.setItem('levelMinimum', levelStart)
+        localStorage.setItem('levelMaximum', levelEnd)
     }
 
     // pulling database variables
@@ -32,7 +32,7 @@ function Game(minimumWord, maximumWord) {
     let passHanzi = []
     let passPinyin = []
     let passEnglish = []
-    let levelSeperatorPoint = 1
+    let levelCaps = 1
     let groupSeperatorPoint = 1
     const getUserRequest = new XMLHttpRequest()
     getUserRequest.onreadystatechange = function () {
@@ -45,7 +45,7 @@ function Game(minimumWord, maximumWord) {
             passHanzi = parsedGameStartVariables.hanziChars
             passPinyin = parsedGameStartVariables.pinyinChars
             passEnglish = parsedGameStartVariables.englishChars
-            levelSeperatorPoint = parsedGameStartVariables.levelSeperatorPoints
+            levelCaps = parsedGameStartVariables.levelCaps
             groupSeperatorPoint = parsedGameStartVariables.groupSeperatorPoints
         }
     }
@@ -53,9 +53,8 @@ function Game(minimumWord, maximumWord) {
     // false so it doesnt show undefined at start
     getUserRequest.open('GET', 'getgamedata.php', false)
     getUserRequest.send()
-
     // displaying game canvas and input bar
-    const levelChoice = (minimumWord / 25) + 1
+    const levelChoice = levelStart
     const background = '/thegame/backgrounds/background' + levelChoice + '.gif'
     document.body.style.background = 'url(' + background + ') no-repeat'
     document.body.style.backgroundSize = 'cover'
@@ -105,7 +104,7 @@ function Game(minimumWord, maximumWord) {
     let score = 0
     let arrNumber = -1
     let boostArrNumber = 0
-    let roundCount = (maximumWord - minimumWord) > 30 ? 2600 : 0// === fix this ===
+    let roundCount = (levelEnd - levelStart) > 0 ? 2600 : 0// === fix this ===
     let initialSpeed = 1 // === try convert to WPM ===
     const initialEnemySpawnRate = 5 * FPS //= ==need to convert to seconds ===
     let gameClock = 180 * FPS // seconds
@@ -146,16 +145,16 @@ function Game(minimumWord, maximumWord) {
     }
 
     // sub arrays for different levels
-    const wordID = passWordID.slice(minimumWord, maximumWord)
-    const hsk1 = passHanzi.slice(minimumWord, maximumWord)
-    const hsk1pin = passPinyin.slice(minimumWord, maximumWord)
-    const hsk1eng = passEnglish.slice(minimumWord, maximumWord)
+    const wordID = passWordID.slice(levelCaps[levelStart-1], levelCaps[levelEnd])
+    const hsk1 = passHanzi.slice(levelCaps[levelStart-1], levelCaps[levelEnd])
+    const hsk1pin = passPinyin.slice(levelCaps[levelStart-1], levelCaps[levelEnd])
+    const hsk1eng = passEnglish.slice(levelCaps[levelStart-1], levelCaps[levelEnd])
 
     // sub arrays for booster words (grant effects)
-    const wordIDBooster = passWordID.slice(0, maximumWord)
-    const hsk1Booster = passHanzi.slice(0, maximumWord)
-    const hsk1pinBooster = passPinyin.slice(0, maximumWord)
-    const hsk1engBooster = passPinyin.slice(0, maximumWord)
+    const wordIDBooster = passWordID.slice(0, levelCaps[levelEnd])
+    const hsk1Booster = passHanzi.slice(0, levelCaps[levelEnd])
+    const hsk1pinBooster = passPinyin.slice(0, levelCaps[levelEnd])
+    const hsk1engBooster = passPinyin.slice(0, levelCaps[levelEnd])
 
     // intro animation
     function introduction() {

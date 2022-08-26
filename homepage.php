@@ -104,8 +104,8 @@
     } from "./gameNew.js"
     const allLevels = document.getElementsByClassName("regular-levels")
     for (let i = 1; i < allLevels.length; i++) {
-      let mini = 25 * (i - 1)
-      let maxi = 25 + 25 * (i - 1)
+      let mini = i
+      let maxi = i
       allLevels[i - 1].addEventListener('click', function() {
         new Game(mini, maxi)
       })
@@ -160,7 +160,32 @@
     </div>
     <div class="row">
       <div class="col"></div>
-      <div class="col-lg-8 col-centered"><img width=340px height=85px id='customgamebtn' onmouseover="imagechange(this.id)" onmouseout="imagechangeback(this.id)" src="/thegame/buttons/customgamebtn.png"></div>
+      <div class="col-lg-8 col-centered"><img width=340px height=85px id='customgamebtn' onmouseover="imagechange(this.id)" onmouseout="imagechangeback(this.id)" onclick="showCustom()" src="/thegame/buttons/customgamebtn.png"></div>
+      <div class="col"></div>
+    </div>
+    <div class="row">
+      <div class="col"></div>
+      <div id="customGame" class="col-lg-8 col-centered" style="display:none">
+        <h3>Make a Custom Game (between 1 and <?php echo $totalLevelsForGame[0]; ?>):</h3>
+        <form action="/thegame/custom_game.php" method="POST">
+          <div style="height:10px"></div>
+          <div class="form-group">
+            <label for="startLevel">Start level: </label>
+            <select name="minimumLevel">
+              <?php for ($i = 1; $i <= $totalLevelsForGame[0]; $i++) : ?>
+                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+              <?php endfor; ?>
+            </select>
+            <label for="startLevel">End level: </label>
+            <select name="maximumLevel">
+              <?php for ($i = 1; $i <= $totalLevelsForGame[0]; $i++) : ?>
+                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+              <?php endfor; ?>
+            </select>
+          </div>
+          <button class="btn btn-info" type="submit" id="makeGameBtn">Start game</button>
+        </form>
+      </div>
       <div class="col"></div>
     </div>
     <div class="row">

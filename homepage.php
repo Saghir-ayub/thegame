@@ -16,14 +16,14 @@
   <?php
   $db = new SQLite3('enemyvalues.sq3');
   // user setting queries
-  $sql_Lang = "SELECT Language FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
-  $sql_Diff = "SELECT Difficulty FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
-  $sql_Mode = "SELECT Gamemode FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
-  $result_Lang = $db->query($sql_Lang); // NEED FOR PHP
-  $result_Diff = $db->query($sql_Diff); // NEED FOR PHP
-  $result_Mode = $db->query($sql_Mode); // NEED FOR PHP
-  $currentLanguage = $result_Lang->fetchArray(); // NEED FOR PHP
-  $currentDifficulty = $result_Diff->fetchArray(); // NEED FOR PHP
+  $sql_Lang = "SELECT Language FROM UserSettings WHERE UserID = 'bubness'";
+  $sql_Diff = "SELECT Difficulty FROM UserSettings WHERE UserID = 'bubness'";
+  $sql_Mode = "SELECT Gamemode FROM UserSettings WHERE UserID = 'bubness'";
+  $result_Lang = $db->query($sql_Lang);
+  $result_Diff = $db->query($sql_Diff);
+  $result_Mode = $db->query($sql_Mode);
+  $currentLanguage = $result_Lang->fetchArray();
+  $currentDifficulty = $result_Diff->fetchArray();
   switch ($currentDifficulty[0]) {
     case 'Easy':
       $currentDifficultyValue = 1;
@@ -40,23 +40,21 @@
     default:
       $currentDifficultyValue = 1;
   }
-  $currentGamemode = $result_Mode->fetchArray(); // NEED FOR PHP
+  $currentGamemode = $result_Mode->fetchArray(); 
   $currentGamemodeEmpty = str_replace(' ', '', $currentGamemode[0]);
 
   // words, levels, group queries
   $sql = "SELECT * FROM ChineseWords";
   $sqlLevels = "SELECT " . $currentGamemodeEmpty . "Score FROM UserChineseLevels WHERE UserID = 'bubness'";
   $sqlPerfect = "SELECT " . $currentGamemodeEmpty . "Perfect FROM UserChineseLevels WHERE UserID = 'bubness'";
-  $sqlTotalLevels = "SELECT COUNT(DISTINCT ChineseWords.Level) FROM ChineseWords"; // NEED FOR PHP
-  $sqlLevelSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Level'";
-  $sqlGroupSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Group'";
+  $sqlTotalLevels = "SELECT COUNT(DISTINCT ChineseWords.Level) FROM ChineseWords";
+  $sqlGroupSeperatorCount = "SELECT count(DISTINCT ChineseWords.'level') FROM ChineseWords GROUP BY ChineseWords.'Group'";
 
   $result = $db->query($sql);
   $resultLevels = $db->query($sqlLevels);
   $resultPerfect = $db->query($sqlPerfect);
-  $resultTotalWords = $db->query($sqlTotalLevels); // NEED FOR PHP
-  $resultLevelSeperator = $db->query($sqlLevelSeperator);
-  $resultGroupSeperator = $db->query($sqlGroupSeperator);
+  $resultTotalWords = $db->query($sqlTotalLevels);
+  $resultGroupSeperatorCount = $db->query($sqlGroupSeperatorCount);
 
   // Create an empty array
   $wordID = array();
@@ -65,9 +63,9 @@
   $englishChars = array();
   $levelScores = array();
   $perfectStates = array();
-  $totalLevelsForGame = $resultTotalWords->fetchArray(); // NEED FOR PHP
-  $levelSeperatorPoints = array();
+  $groupSeperatorCount = array();
   $groupSeperatorPoints = array();
+  $totalLevelsForGame = $resultTotalWords->fetchArray();
 
   while ($singlerow = $result->fetchArray()) {
     array_push($wordID, $singlerow[0]);
@@ -81,11 +79,15 @@
   while ($singlePerfect = $resultPerfect->fetchArray()) {
     array_push($perfectStates, $singlePerfect[0]);
   }
-  while ($singleLevelSeperator = $resultLevelSeperator->fetchArray()) {
-    array_push($levelSeperatorPoints, $singleLevelSeperator[0]);
+  // # of words per group
+  while ($singleGroupSeperator = $resultGroupSeperatorCount->fetchArray()) {
+    array_push($groupSeperatorCount, $singleGroupSeperator[0]);
   }
-  while ($singleGroupSeperator = $resultGroupSeperator->fetchArray()) {
-    array_push($groupSeperatorPoints, $singleGroupSeperator[0]);
+  // cumil # of words per group, for Game()
+  $totalGroupsForGame = count($groupSeperatorCount);
+  array_push($groupSeperatorPoints, 0);
+  for ($p = 1; $p <= $totalGroupsForGame; $p++) {
+    array_push($groupSeperatorPoints, $groupSeperatorPoints[$p - 1] + $groupSeperatorCount[$p - 1]);
   }
   unset($db);
   ?>
@@ -108,6 +110,12 @@
       let maxi = i
       allLevels[i - 1].addEventListener('click', function() {
         new Game(mini, maxi)
+      })
+    }
+    const allGroups = document.getElementsByClassName("group-levels")
+    for (let k = 0; k < allGroups.length; k++) {
+      allGroups[k].addEventListener('click', function() {
+        new Game(groupSeperatorPoints[k]+1, groupSeperatorPoints[k+1])
       })
     }
   </script>
@@ -138,11 +146,12 @@
     <div class="row">
       <div class="col"></div>
       <div class="col-lg-8 center levels">
-        <button class="btn-lg" onclick="game(0,149)">HSK 1 (1-6)</button>
-        <button class="btn-lg" onclick="game(150,299)">HSK 2 (7-12)</button>
-        <button class="btn-lg" onclick="game(300,599)">HSK 3 (13-24)</button>
-        <button class="btn-lg" onclick="game(600,1199)">HSK 4 (25-48)</button>
-        <button class="btn-lg" onclick="game(1200,2500)">HSK 5 (48-100)</button>
+        <!-- making all the groups -->
+        <?php
+        for ($k = 1; $k <= $totalGroupsForGame; $k++) {
+          echo "<button class='btn-lg group-levels' style='width:14%;horizontal-align:left'> HSK" . $k . "</button>";
+        }
+        ?>
       </div>
       <div class="col"></div>
     </div>
@@ -165,25 +174,22 @@
     </div>
     <div class="row">
       <div class="col"></div>
-      <div id="customGame" class="col-lg-8 col-centered" style="display:none">
-        <h3>Make a Custom Game (between 1 and <?php echo $totalLevelsForGame[0]; ?>):</h3>
-        <form action="/thegame/custom_game.php" method="POST">
-          <div style="height:10px"></div>
-          <div class="form-group">
-            <label for="startLevel">Start level: </label>
-            <select name="minimumLevel">
-              <?php for ($i = 1; $i <= $totalLevelsForGame[0]; $i++) : ?>
-                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-              <?php endfor; ?>
-            </select>
-            <label for="startLevel">End level: </label>
-            <select name="maximumLevel">
-              <?php for ($i = 1; $i <= $totalLevelsForGame[0]; $i++) : ?>
-                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-              <?php endfor; ?>
-            </select>
-          </div>
-          <button class="btn btn-info" type="submit" id="makeGameBtn">Start game</button>
+      <div id="customGame" class="col-lg-8 col-centered" style="display:none; background-Color:white;width:100px">
+        <form method="POST" id="customGameForm">
+          <label for="startLevel">Start level: </label>
+          <select name="minimumLevel">
+            <?php for ($i = 1; $i <= $totalLevelsForGame[0]; $i++) : ?>
+              <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+            <?php endfor; ?>
+          </select>
+          <label for="startLevel">End level: </label>
+          <select name="maximumLevel">
+            <?php for ($i = 1; $i <= $totalLevelsForGame[0]; $i++) : ?>
+              <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+            <?php endfor; ?>
+          </select>
+          <button class="btn btn-info" id="makeGameStart" type="submit">Start game</button>
+
         </form>
       </div>
       <div class="col"></div>
@@ -258,6 +264,7 @@
     let perfectStates = <?php echo json_encode($perfectStates); ?>;
     let totalLevelsForGame = <?php echo json_encode($totalLevelsForGame[0]); ?>;
     let levelScores = <?php echo json_encode($levelScores); ?>;
+    let groupSeperatorPoints = <?php echo json_encode($groupSeperatorPoints); ?>;
   </script>
 
   <script>

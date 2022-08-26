@@ -54,8 +54,8 @@ function Game(levelStart, levelEnd) {
     getUserRequest.open('GET', 'getgamedata.php', false)
     getUserRequest.send()
     // displaying game canvas and input bar
-    const levelChoice = levelStart
-    const background = '/thegame/backgrounds/background' + levelChoice + '.gif'
+    const levelChoice = levelStart === levelEnd ? levelStart : levelStart +" - "+levelEnd
+    const background = '/thegame/backgrounds/background' + levelStart + '.gif'
     document.body.style.background = 'url(' + background + ') no-repeat'
     document.body.style.backgroundSize = 'cover'
     const gameMenu = document.getElementById('gameMenu')
@@ -145,10 +145,10 @@ function Game(levelStart, levelEnd) {
     }
 
     // sub arrays for different levels
-    const wordID = passWordID.slice(levelCaps[levelStart-1], levelCaps[levelEnd])
-    const hsk1 = passHanzi.slice(levelCaps[levelStart-1], levelCaps[levelEnd])
-    const hsk1pin = passPinyin.slice(levelCaps[levelStart-1], levelCaps[levelEnd])
-    const hsk1eng = passEnglish.slice(levelCaps[levelStart-1], levelCaps[levelEnd])
+    const wordID = passWordID.slice(levelCaps[levelStart - 1], levelCaps[levelEnd])
+    const hsk1 = passHanzi.slice(levelCaps[levelStart - 1], levelCaps[levelEnd])
+    const hsk1pin = passPinyin.slice(levelCaps[levelStart - 1], levelCaps[levelEnd])
+    const hsk1eng = passEnglish.slice(levelCaps[levelStart - 1], levelCaps[levelEnd])
 
     // sub arrays for booster words (grant effects)
     const wordIDBooster = passWordID.slice(0, levelCaps[levelEnd])
@@ -195,7 +195,6 @@ function Game(levelStart, levelEnd) {
     const contBtn = document.getElementById('continuebtn')
     contBtn.addEventListener('click', function (event) {
         event.preventDefault()
-        document.getElementById('continuebtn').click()
         gameState = 'play'
         document.getElementById('pauseinterface').style.display = 'none'
         updateAll()
@@ -210,7 +209,6 @@ function Game(levelStart, levelEnd) {
         window.location.href = '/thegame/homepage.php'
     })
 
-    // let pauseGame = document.getElementById("myBtn");
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
             event.preventDefault()
@@ -462,7 +460,7 @@ function Game(levelStart, levelEnd) {
         // check if the game is over
         currentLives = lives - liveslost
         let gameOverResult = isGameOver(gameMode, currentLives, enemiesAlive, numEnemies, gameClock, score)
-        if(gameOverResult){
+        if (gameOverResult) {
             gameState = gameOverResult.gameState
             gameResult = gameOverResult.gameResult
         }
@@ -505,12 +503,12 @@ function Game(levelStart, levelEnd) {
         c.clearRect(0, 0, w, h)
 
         // updating level score
-        if (gameResult === 'pass') {
+        if (gameResult === 'pass' && levelStart === levelEnd) {
             alert('Congratulations you won!')
             const hr = new XMLHttpRequest()
-            let url = 'updateLevelScore.php?level=' + levelChoice + '&mode=' + gameMode
+            let url = 'updateLevelScore.php?level=' + levelStart + '&mode=' + gameMode
             if (liveslost === 0) {
-                url = 'updateLevelScore.php?diff=' + difficultyLevel + '&level=' + levelChoice + '&mode=' + gameMode
+                url = 'updateLevelScore.php?diff=' + difficultyLevel + '&level=' + levelStart + '&mode=' + gameMode
             }
             hr.open('POST', url, true)
             hr.send()
@@ -793,29 +791,29 @@ function isGameOver(gameMode, currentLives, enemiesAlive, numEnemies, gameClock,
             if (currentLives <= 0) {
                 gameState = 'finish'
                 gameResult = 'fail'
-                return {gameState, gameResult}
+                return { gameState, gameResult }
             } else if (enemiesAlive === 0 && numEnemies >= 40) {
                 gameState = 'finish'
                 gameResult = 'pass'
-                return {gameState, gameResult}
+                return { gameState, gameResult }
             }
             break
         case 'Beat The Clock':
             if (currentLives <= 0) {
                 gameState = 'finish'
                 gameResult = 'fail'
-                return {gameState, gameResult}
+                return { gameState, gameResult }
             } else if (gameClock <= 0) {
                 gameState = 'finish'
                 gameResult = 'pass'
-                return {gameState, gameResult}
+                return { gameState, gameResult }
             }
             break
         case 'Endurance':
             if (currentLives <= 0) {
                 gameState = 'finish'
                 gameResult = 'fail'
-                return {gameState, gameResult}
+                return { gameState, gameResult }
             }
             break
         case 'Practice':
@@ -823,11 +821,11 @@ function isGameOver(gameMode, currentLives, enemiesAlive, numEnemies, gameClock,
             if (currentLives <= 0) {
                 gameState = 'finish'
                 gameResult = 'fail'
-                return {gameState, gameResult}
+                return { gameState, gameResult }
             } else if (score >= 25) {
                 gameState = 'finish'
                 gameResult = 'pass'
-                return {gameState, gameResult}
+                return { gameState, gameResult }
             }
             break
         case 'Freestyle':
@@ -844,5 +842,22 @@ function databaseScoreUpdate(dataName) {
     hr.open('POST', url + data, true)
     hr.send()
 }
+
+// custom game start
+let formGame = document.getElementById("customGameForm")
+formGame.addEventListener("submit", function (event) {
+    event.preventDefault()
+    const startingLevelElement = formGame.elements["minimumLevel"]
+    const endingLevelElement = formGame.elements["maximumLevel"]
+
+    let startingLevelForGame = startingLevelElement.value
+    let endingLevelForGame = endingLevelElement.value
+
+    if (startingLevelForGame > endingLevelForGame) {
+        new Game(startingLevelForGame, startingLevelForGame)
+    } else {
+        new Game(startingLevelForGame, endingLevelForGame)
+    }
+})
 
 export { Game, restartLevel, endgameDisplayLayout, spawnEnemyCheck, isGameOver, Booster, Enemy }

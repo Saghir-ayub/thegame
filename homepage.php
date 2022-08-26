@@ -40,7 +40,7 @@
     default:
       $currentDifficultyValue = 1;
   }
-  $currentGamemode = $result_Mode->fetchArray(); 
+  $currentGamemode = $result_Mode->fetchArray();
   $currentGamemodeEmpty = str_replace(' ', '', $currentGamemode[0]);
 
   // words, levels, group queries
@@ -115,7 +115,7 @@
     const allGroups = document.getElementsByClassName("group-levels")
     for (let k = 0; k < allGroups.length; k++) {
       allGroups[k].addEventListener('click', function() {
-        new Game(groupSeperatorPoints[k]+1, groupSeperatorPoints[k+1])
+        new Game(groupSeperatorPoints[k] + 1, groupSeperatorPoints[k + 1])
       })
     }
   </script>
@@ -283,6 +283,27 @@
       document.getElementById('levelBtn' + (i + 1)).classList.add('nightmare-shadow');
       document.getElementById('levelBtn' + (i + 1)).style.borderColor = 'rgba(0,0,0,0)';
     }
+  </script>
+  <script type="module">
+    import {
+      Game
+    } from './gameNew.js'
+    // custom game start
+    let formGame = document.getElementById("customGameForm")
+    formGame.addEventListener("submit", function(event) {
+      event.preventDefault()
+      const startingLevelElement = formGame.elements["minimumLevel"]
+      const endingLevelElement = formGame.elements["maximumLevel"]
+
+      let startingLevelForGame = startingLevelElement.value
+      let endingLevelForGame = endingLevelElement.value
+
+      if (startingLevelForGame > endingLevelForGame) {
+        new Game(startingLevelForGame, startingLevelForGame)
+      } else {
+        new Game(startingLevelForGame, endingLevelForGame)
+      }
+    })
   </script>
   <!-- canvas/game and input boxes -->
   <div id="boosterImages" style="display:none">

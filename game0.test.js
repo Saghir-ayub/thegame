@@ -5,7 +5,8 @@ import { main } from './index.js'
 document.body.innerHTML = `<canvas id='pane'></canvas><input id="inputtext">
 <button id = "continuebtn"></button>
 <button id = "restartbtn"></button>
-<button id = "homebtn"></button>`
+<button id = "homebtn"></button>
+<form id = "customGameForm"></form>`
 
 describe("game", () => {
     // canvas setup

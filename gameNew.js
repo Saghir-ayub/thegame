@@ -843,21 +843,4 @@ function databaseScoreUpdate(dataName) {
     hr.send()
 }
 
-// custom game start
-let formGame = document.getElementById("customGameForm")
-formGame.addEventListener("submit", function (event) {
-    event.preventDefault()
-    const startingLevelElement = formGame.elements["minimumLevel"]
-    const endingLevelElement = formGame.elements["maximumLevel"]
-
-    let startingLevelForGame = startingLevelElement.value
-    let endingLevelForGame = endingLevelElement.value
-
-    if (startingLevelForGame > endingLevelForGame) {
-        new Game(startingLevelForGame, startingLevelForGame)
-    } else {
-        new Game(startingLevelForGame, endingLevelForGame)
-    }
-})
-
 export { Game, restartLevel, endgameDisplayLayout, spawnEnemyCheck, isGameOver, Booster, Enemy }

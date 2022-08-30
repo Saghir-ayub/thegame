@@ -56,7 +56,7 @@ function Game(levelStart, levelEnd) {
     // displaying game canvas and input bar
     const levelChoice = levelStart === levelEnd ? levelStart : levelStart +" - "+levelEnd
     const background = '/thegame/backgrounds/background' + levelStart + '.gif'
-    document.body.style.background = 'url(' + background + ') no-repeat'
+    document.body.style.background = 'url(' + background + ') no-repeat fixed'
     document.body.style.backgroundSize = 'cover'
     const gameMenu = document.getElementById('gameMenu')
     const pane = document.getElementById('pane')

@@ -137,7 +137,7 @@
   </script> -->
 
   <!-- game menu/level select -->
-  <div class="container-fluid" id="gameMenu" style="display:block; position:absolute; top:30%; left:0px;">
+  <div class="container-fluid" id="gameMenu" style="display:block; position:absolute; top:20%; left:0px;">
     <div class="row">
       <div class="col"></div>
       <div class="col-lg-8 col-centered"><img width=340px height=85px id='levelselectbtn' onmouseover="imagechange(this.id)" onmouseout="imagechangeback(this.id)" onclick="showLevels(); setButtonColours()" src="/thegame/buttons/levelselectbtn.png"></div>
@@ -254,9 +254,9 @@
   </div>
   <!-- scoreboard modal -->
   <div id='statisticsModal' class='modal'>
-    <div class='modal-content'>
+    <div class='modal-content' style="height:100%; width:85%; top:-10%; border:solid">
       <span id='statisticsClose' onclick=''>&times;</span>
-      <iframe src=http://localhost/thegame/statistics.php style="height:400px"></iframe>
+      <iframe src=http://localhost/thegame/statistics.php style="height:90%; width:100%"></iframe>
     </div>
   </div>
   <!-- variables used by homepage.php and main.js -->

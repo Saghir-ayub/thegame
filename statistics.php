@@ -11,6 +11,44 @@
 </head>
 
 <body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavDropdown">
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<h2 id="overallStats" class="statisticItem nav-link active" onclick="showStats(this.id)">Overall</h2>
+				</li>
+				<li class="nav-item">
+					<h2 id="groupStats" class="statisticItem nav-link" onclick="showStats(this.id)">Groups</h2>
+				</li>
+				<li class="nav-item">
+					<h2 id="levelStats" class="statisticItem nav-link" onclick="showStats(this.id)">Levels</h2>
+				</li>
+				<li class="nav-item">
+					<h2 id="achievmentStats" class="statisticItem nav-link" onclick="showStats(this.id)">Achievments</h2>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<script>
+		function showStats(buttonID) {
+			const navBarItems = document.getElementsByClassName("statisticItem")
+			const navBarItemClicked = document.getElementById(buttonID)
+			for (const navBarItem of navBarItems) {
+				navBarItem.classList.remove("active")
+			}
+			navBarItemClicked.classList.add("active")
+
+			const navBarDatas = document.getElementsByClassName("statisticData")
+			const navBarDataClicked = document.getElementById(buttonID + "Data")
+			for (const navBarData of navBarDatas) {
+				navBarData.style.display = "none"
+			}
+			navBarDataClicked.style.display = "block"
+		}
+	</script>
 	<?php
 	$db = new SQLite3('enemyvalues.sq3');
 	//total words known
@@ -44,11 +82,6 @@
 	array_push($totalWords, $result_4_array[0]);
 	array_push($totalScoreAll, $result_5_array[0]);
 
-	echo "<p>Total Words known: " . $totalWordsKnown[0] . "/" . $totalWords[0] . "</p>
-<p>Words known well: " . $totalWordsKnownWell[0] . " (10+ score)</p>
-<p>Words Mastered: " . $totalWordsMastered[0] . " (20+ score)</p>
-<p>Total Score: " . $totalScoreAll[0] . "</p>";
-
 	//Group words known
 	//Total groups：
 	$sql_groups = "SELECT Count(DISTINCT ChineseWords.'Group') FROM ChineseWords";
@@ -74,7 +107,7 @@
 	JOIN ChineseWords ON ChineseWords.ID = UserChineseWords.WordID
 	WHERE UserID = 'bubness'
 	GROUP BY ChineseWords.'Group'";
-	
+
 	$sql_h4 = "SELECT AVG(UserChineseWords.WordScore) FROM UserChineseWords
 	JOIN ChineseWords ON ChineseWords.ID = UserChineseWords.WordID
 	WHERE UserID = 'bubness'
@@ -100,15 +133,27 @@
 	while ($wordsAvgScoreGroupRow = $wordsAvgScore->fetchArray()) {
 		array_push($groupWordsAverageScoreArray, $wordsAvgScoreGroupRow[0]);
 	}
-
-	for ($i = 1; $i <= $levelGroups[0]; $i++) {
-		echo "<p><b>HSK " . $i . ":</b></p>
- <p> Total words known: " . $groupWordsKnownArray[$i - 1] . "/" . $groupWordsTotalArray[$i - 1] . "</p>
- <p> Total score: " . $groupWordsTotalScoreArray[$i - 1] . "</p>
- <p> Average score per word: " . $groupWordsAverageScoreArray[$i - 1] . "</p>";
-	}
 	unset($db);
 	?>
+	<div id="overallStatsData" class="statisticData">
+		<?php
+		echo "<p>Total Words known: " . $totalWordsKnown[0] . "/" . $totalWords[0] . "</p>
+	<p>Words known well: " . $totalWordsKnownWell[0] . " (10+ score)</p>
+	<p>Words Mastered: " . $totalWordsMastered[0] . " (20+ score)</p>
+	<p>Total Score: " . $totalScoreAll[0] . "</p>";
+		?>
+	</div>
+
+	<div id="groupStatsData" class="statisticData" style="display:none">
+		<?php
+		for ($i = 1; $i <= $levelGroups[0]; $i++) {
+			echo "<p><b>HSK " . $i . ":</b></p>
+ 			<p> Total words known: " . $groupWordsKnownArray[$i - 1] . "/" . $groupWordsTotalArray[$i - 1] . "</p>
+ 			<p> Total score: " . $groupWordsTotalScoreArray[$i - 1] . "</p>
+ 			<p> Average score per word: " . $groupWordsAverageScoreArray[$i - 1] . "</p>";
+		}
+		?>
+	</div>
 </body>
 
 </html>

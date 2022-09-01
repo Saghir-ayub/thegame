@@ -28,4 +28,15 @@ Custom game modes:
 Add in a custom game mode, chooses levels to combine together/play words by their group (dynamic dropdown?)
 Figure out how to import CSV files as a custom game mode
 
+sql commands to add:
+//// score per level of each type of gamemode
+SELECT userChineseLevels.'RegularScore', userChineseLevels.'BeatTheClockScore', userChineseLevels.'RaceToFinishScore',
+userChineseLevels.'EnduranceScore', userChineseLevels.'PracticeScore'
+FROM userChineseLevels WHERE userChineseLevels.'UserID' = 'bubness' GROUP BY userChineseLevels.'Level'
+
+//// total regularmode RegularScore
+SELECT sum(UserChineseLevels.RegularScore) FROM UserChineseLevels WHERE UserChineseLevels.UserID = 'bubness'
+
+//// descending order of last 25 correct words
+SELECT WordID FROM UserChineseWords WHERE UserID = 'bubness' AND DATE IS NOT NULL ORDER BY Date DESC limit 25 
 

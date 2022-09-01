@@ -34,6 +34,7 @@ function Game(levelStart, levelEnd) {
     let passEnglish = []
     let levelCaps = 1
     let groupSeperatorPoint = 1
+    let descWordsBydate = []
     const getUserRequest = new XMLHttpRequest()
     getUserRequest.onreadystatechange = function () {
         if (this.readyState === 4) {
@@ -47,6 +48,7 @@ function Game(levelStart, levelEnd) {
             passEnglish = parsedGameStartVariables.englishChars
             levelCaps = parsedGameStartVariables.levelCaps
             groupSeperatorPoint = parsedGameStartVariables.groupSeperatorPoints
+            descWordsBydate = parsedGameStartVariables.descWordByDate
         }
     }
 

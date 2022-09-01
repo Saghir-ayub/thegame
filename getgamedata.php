@@ -6,6 +6,9 @@ $sql = "SELECT * FROM ChineseWords";
 $sqlTotalLevels = "SELECT COUNT(DISTINCT ChineseWords.Level) FROM ChineseWords"; // NEED FOR PHP
 $sqlLevelSeperator = "SELECT count(*) from ChineseWords GROUP BY ChineseWords.'Level'";
 $sqlGroupSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Group'";
+$sqlDescDates = "SELECT ID, Hanzi, Pinyin, English FROM ChineseWords 
+JOIN UserChineseWords ON UserChineseWords.WordID = ChineseWords.ID
+WHERE UserChineseWords.UserID = 'bubness' AND UserChineseWords.DATE IS NOT NULL ORDER BY Date DESC";
 
 
 $result_Diff = $db->query($sql_Diff); // NEED FOR PHP
@@ -14,6 +17,7 @@ $result = $db->query($sql);
 $resultTotalWords = $db->query($sqlTotalLevels); // NEED FOR PHP
 $resultLevelSeperator = $db->query($sqlLevelSeperator);
 $resultGroupSeperator = $db->query($sqlGroupSeperator);
+$resultDescDates = $db->query($sqlDescDates);
 
 
 // Create an empty array
@@ -24,6 +28,7 @@ $englishChars = array();
 $totalLevelsForGame = $resultTotalWords->fetchArray(); // NEED FOR PHP
 $levelSeperatorPoints = array();
 $groupSeperatorPoints = array();
+$descWordsByDate = array();
 
 // Fill arrays/variables
 // Difficulty
@@ -62,13 +67,17 @@ while ($singleLevelSeperator = $resultLevelSeperator->fetchArray()) {
 }
 // Level seperator points cumil counting level seperator points
 $levelCaps = array();
-array_push($levelCaps,0);
-for($i = 1; $i <= count($levelSeperatorPoints); $i++){
-    array_push($levelCaps, $levelCaps[$i-1] + $levelSeperatorPoints[$i-1]);
+array_push($levelCaps, 0);
+for ($i = 1; $i <= count($levelSeperatorPoints); $i++) {
+  array_push($levelCaps, $levelCaps[$i - 1] + $levelSeperatorPoints[$i - 1]);
 }
 // Group seperator for game levels
 while ($singleGroupSeperator = $resultGroupSeperator->fetchArray()) {
   array_push($groupSeperatorPoints, $singleGroupSeperator[0]);
+}
+// Words done correctly, descending order from date last entered correctly
+while ($singlerowDescDates = $resultDescDates->fetchArray()) {
+  array_push($descWordsByDate, $singlerowDescDates);
 }
 
 // All variables into a JSON:
@@ -76,7 +85,7 @@ $arrOfArrays = array(
   'currentDifficulty' => $currentDifficultyValue, 'gamemode' => $currentGamemode[0],
   'wordID' => $wordID, 'hanziChars' => $hanziChars, 'pinyinChars' => $pinyinChars,
   'englishChars' => $englishChars, 'levelCaps' => $levelCaps,
-  'groupSeperatorPoints' => $groupSeperatorPoints
+  'groupSeperatorPoints' => $groupSeperatorPoints, 'descWordByDate' => $descWordsByDate
 );
 echo json_encode($arrOfArrays);
 unset($db);

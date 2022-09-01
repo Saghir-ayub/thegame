@@ -14,7 +14,8 @@
     <!-- querying the database to pull data-->
     <?php
     $db = new SQLite3('enemyvalues.sq3');
-    $sql = "SELECT ChineseWords.ID, ChineseWords.Hanzi, ChineseWords.Pinyin, ChineseWords.English, UserChineseWords.WordScore, ChineseWords.Level FROM UserChineseWords
+    $sql = "SELECT ChineseWords.ID, ChineseWords.Hanzi, ChineseWords.Pinyin, ChineseWords.English, UserChineseWords.WordScore, ChineseWords.Level,UserChineseWords.Date
+    FROM UserChineseWords
     JOIN
     ChineseWords
     ON ChineseWords.ID = UserChineseWords.WordID
@@ -32,9 +33,7 @@
         array_push($pinyinChars, $singlerow[2]);
         array_push($englishChars, $singlerow[3]);
         array_push($wordScore, $singlerow[4]);
-    }
 
-    while ($singlerow = $result->fetchArray()) {
         echo "<button class='btn-primary scoreBtn' onclick='wordCard(this.id)' onmouseover='wordPinyin(this.id)' onmouseout='wordHanzi(this.id)' id='word_" . $singlerow[0] . "'>" . $singlerow[1] . "</button>";
         echo "
     <div id='wordModal_" . $singlerow[0] . "' class='modal'>
@@ -45,6 +44,7 @@
         <p>English: " . $singlerow[3] . "</p>
         <p>Score: " . $singlerow[4] . "</p>
         <p>Level: " . $singlerow[5] . "</p>
+        <p>Last played: " . $singlerow[6] . "</p>
       </div>
     </div>";
     }
@@ -55,14 +55,8 @@
     <!-- echoing database values into variables -->
     <script type="text/javascript">
         var passHanzi = <?php echo json_encode($hanziChars); ?>;
-    </script>
-    <script type="text/javascript">
         var passPinyin = <?php echo json_encode($pinyinChars); ?>;
-    </script>
-    <script type="text/javascript">
         var passEnglish = <?php echo json_encode($englishChars); ?>;
-    </script>
-    <script type="text/javascript">
         var passScore = <?php echo json_encode($wordScore); ?>;
     </script>
 

@@ -56,7 +56,7 @@ function Game(levelStart, levelEnd) {
     getUserRequest.open('GET', 'getgamedata.php', false)
     getUserRequest.send()
     // displaying game canvas and input bar
-    const levelChoice = levelStart === levelEnd ? levelStart : levelStart +" - "+levelEnd
+    const levelChoice = levelStart === levelEnd ? levelStart : levelStart + " - " + levelEnd
     const background = '/thegame/backgrounds/background' + levelStart + '.gif'
     document.body.style.background = 'url(' + background + ') no-repeat fixed'
     document.body.style.backgroundSize = 'cover'

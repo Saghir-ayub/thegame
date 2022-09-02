@@ -65,13 +65,13 @@
             if (passScore[i - 1] < 1) {
                 document.getElementById("word_" + i).classList.add('btn-secondary');
                 document.getElementById("word_" + i).style.borderColor = "rgb(0, 0, 0)";
-            } else if (passScore[i - 1] >= 1 && passScore[i - 1] < 10) {
-                document.getElementById("word_" + i).style.backgroundColor = "rgb(209, " + passScore[i - 1] * 21 + ", 0)";
+            } else if (passScore[i - 1] >= 1 && passScore[i - 1] < 20) {
+                document.getElementById("word_" + i).style.backgroundColor = "rgb(209, " + passScore[i - 1] * 10 + ", 0)";
                 document.getElementById("word_" + i).style.borderColor = "rgb(0, 0, 0)";
-            } else if (passScore[i - 1] >= 10 && passScore[i - 1] < 20) {
-                document.getElementById("word_" + i).style.backgroundColor = "rgb(" + (209 - (passScore[i - 1] - 10) * 21) + ", 209, 0)";
+            } else if (passScore[i - 1] >= 20 && passScore[i - 1] < 40) {
+                document.getElementById("word_" + i).style.backgroundColor = "rgb(" + (209 - (passScore[i - 1] - 20) * 10) + ", 209, 0)";
                 document.getElementById("word_" + i).style.borderColor = "rgb(0, 0, 0)";
-            } else if (passScore[i - 1] >= 20) {
+            } else if (passScore[i - 1] >= 40) {
                 document.getElementById("word_" + i).classList.add('btn-dark');
                 document.getElementById("word_" + i).classList.add('maxLevel');
                 document.getElementById("word_" + i).style.font = "bold";

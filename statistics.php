@@ -53,8 +53,8 @@
 	$db = new SQLite3('enemyvalues.sq3');
 	//total words known
 	$sql_1 = "SELECT count(*) as wordsKnown FROM UserChineseWords WHERE WordScore > 0 AND UserID = 'bubness'";
-	$sql_2 = "SELECT count(*) as wordsKnown FROM UserChineseWords WHERE WordScore >= 10 AND UserID = 'bubness'";
-	$sql_3 = "SELECT count(*) as wordsKnown FROM UserChineseWords WHERE WordScore >= 20 AND UserID = 'bubness'";
+	$sql_2 = "SELECT count(*) as wordsKnown FROM UserChineseWords WHERE WordScore >= 20 AND UserID = 'bubness'";
+	$sql_3 = "SELECT count(*) as wordsKnown FROM UserChineseWords WHERE WordScore >= 40 AND UserID = 'bubness'";
 	$sql_4 = "SELECT count(*) as wordsKnown FROM ChineseWords";
 	$sql_5 = "SELECT SUM(UserChineseWords.WordScore) FROM UserChineseWords WHERE UserID = 'bubness'";
 
@@ -138,8 +138,8 @@
 	<div id="overallStatsData" class="statisticData">
 		<?php
 		echo "<p>Total Words known: " . $totalWordsKnown[0] . "/" . $totalWords[0] . "</p>
-	<p>Words known well: " . $totalWordsKnownWell[0] . " (10+ score)</p>
-	<p>Words Mastered: " . $totalWordsMastered[0] . " (20+ score)</p>
+	<p>Words known well: " . $totalWordsKnownWell[0] . " (20+ score)</p>
+	<p>Words Mastered: " . $totalWordsMastered[0] . " (40+ score)</p>
 	<p>Total Score: " . $totalScoreAll[0] . "</p>";
 		?>
 	</div>

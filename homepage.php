@@ -118,6 +118,19 @@
         new Game(groupSeperatorPoints[k] + 1, groupSeperatorPoints[k + 1])
       })
     }
+    const playLastTwentyFive = document.getElementById("playLastTwentyFive")
+    const playLastFifty = document.getElementById("playLastFifty")
+    const playLastHundred = document.getElementById("playLastHundred")
+
+    playLastTwentyFive.addEventListener('click', function() {
+      new Game(1, 1, "refreshMode")
+    })
+    playLastFifty.addEventListener('click', function() {
+      new Game(1, 2, "refreshMode")
+    })
+    playLastHundred.addEventListener('click', function() {
+      new Game(1, 3, "refreshMode")
+    })
   </script>
 
   <!-- old versions
@@ -189,8 +202,10 @@
             <?php endfor; ?>
           </select>
           <button class="btn btn-info" id="makeGameStart" type="submit">Start game</button>
-
         </form>
+        <button id="playLastTwentyFive">Oldest 25</button>
+        <button id="playLastFifty">Oldest 50</button>
+        <button id="playLastHundred">Oldest 100</button>
       </div>
       <div class="col"></div>
     </div>

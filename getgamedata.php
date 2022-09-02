@@ -8,7 +8,7 @@ $sqlLevelSeperator = "SELECT count(*) from ChineseWords GROUP BY ChineseWords.'L
 $sqlGroupSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Group'";
 $sqlDescDates = "SELECT ID, Hanzi, Pinyin, English FROM ChineseWords 
 JOIN UserChineseWords ON UserChineseWords.WordID = ChineseWords.ID
-WHERE UserChineseWords.UserID = 'bubness' AND UserChineseWords.DATE IS NOT NULL ORDER BY Date DESC";
+WHERE UserChineseWords.UserID = 'bubness' AND UserChineseWords.DATE IS NOT NULL ORDER BY Date";
 
 
 $result_Diff = $db->query($sql_Diff); // NEED FOR PHP
@@ -76,9 +76,21 @@ while ($singleGroupSeperator = $resultGroupSeperator->fetchArray()) {
   array_push($groupSeperatorPoints, $singleGroupSeperator[0]);
 }
 // Words done correctly, descending order from date last entered correctly
+$descWordsByDateID = array();
+$descWordsByDateHanzi = array();
+$descWordsByDatePinyin = array();
+$descWordsByDateEnglish = array();
 while ($singlerowDescDates = $resultDescDates->fetchArray()) {
-  array_push($descWordsByDate, $singlerowDescDates);
+  array_push($descWordsByDateID, $singlerowDescDates[0]);
+  array_push($descWordsByDateHanzi, $singlerowDescDates[1]);
+  array_push($descWordsByDatePinyin, $singlerowDescDates[2]);
+  array_push($descWordsByDateEnglish, $singlerowDescDates[3]);
 }
+// pushing words done correctly by date into a single array
+array_push($descWordsByDate, $descWordsByDateID);
+array_push($descWordsByDate, $descWordsByDateHanzi);
+array_push($descWordsByDate, $descWordsByDatePinyin);
+array_push($descWordsByDate, $descWordsByDateEnglish);
 
 // All variables into a JSON:
 $arrOfArrays = array(

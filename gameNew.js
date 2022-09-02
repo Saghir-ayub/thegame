@@ -14,7 +14,7 @@ function restartLevel() {
     Game(levelMinimum, levelMaximum)
 }
 
-function Game(levelStart, levelEnd) {
+function Game(levelStart, levelEnd, gameType) {
     // removing any stored levelStart
     if (typeof window !== 'undefined') {
         localStorage.removeItem('levelMinimum')
@@ -34,7 +34,6 @@ function Game(levelStart, levelEnd) {
     let passEnglish = []
     let levelCaps = 1
     let groupSeperatorPoint = 1
-    let descWordsBydate = []
     const getUserRequest = new XMLHttpRequest()
     getUserRequest.onreadystatechange = function () {
         if (this.readyState === 4) {
@@ -42,21 +41,29 @@ function Game(levelStart, levelEnd) {
             const parsedGameStartVariables = JSON.parse(gameStartVariables)
             difficultyLevel = parsedGameStartVariables.currentDifficulty
             gameMode = parsedGameStartVariables.gamemode
-            passWordID = parsedGameStartVariables.wordID
-            passHanzi = parsedGameStartVariables.hanziChars
-            passPinyin = parsedGameStartVariables.pinyinChars
-            passEnglish = parsedGameStartVariables.englishChars
-            levelCaps = parsedGameStartVariables.levelCaps
+            if (gameType === "refreshMode") {
+                passWordID = parsedGameStartVariables.descWordByDate[0]
+                passHanzi = parsedGameStartVariables.descWordByDate[1]
+                passPinyin = parsedGameStartVariables.descWordByDate[2]
+                passEnglish = parsedGameStartVariables.descWordByDate[3]
+                levelCaps = [0, 25, 50, 100]
+            } else {
+                passWordID = parsedGameStartVariables.wordID
+                passHanzi = parsedGameStartVariables.hanziChars
+                passPinyin = parsedGameStartVariables.pinyinChars
+                passEnglish = parsedGameStartVariables.englishChars
+                levelCaps = parsedGameStartVariables.levelCaps
+            }
             groupSeperatorPoint = parsedGameStartVariables.groupSeperatorPoints
-            descWordsBydate = parsedGameStartVariables.descWordByDate
         }
     }
 
     // false so it doesnt show undefined at start
     getUserRequest.open('GET', 'getgamedata.php', false)
     getUserRequest.send()
+
     // displaying game canvas and input bar
-    const levelChoice = levelStart === levelEnd ? levelStart : levelStart + " - " + levelEnd
+    const levelChoice = gameType ? "Custom" : levelStart === levelEnd ? levelStart : levelStart + " - " + levelEnd
     const background = '/thegame/backgrounds/background' + levelStart + '.gif'
     document.body.style.background = 'url(' + background + ') no-repeat fixed'
     document.body.style.backgroundSize = 'cover'

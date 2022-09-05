@@ -1,20 +1,20 @@
 <?php
 $db = new SQLite3('enemyvalues.sq3');
-$sql_Diff = "SELECT Difficulty FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
-$sql_Mode = "SELECT Gamemode FROM UserSettings WHERE UserID = 'bubness'"; // NEED FOR PHP
+$sql_Diff = "SELECT Difficulty FROM UserSettings WHERE UserID = 'bubness'";
+$sql_Mode = "SELECT Gamemode FROM UserSettings WHERE UserID = 'bubness'";
 $sql = "SELECT * FROM ChineseWords";
-$sqlTotalLevels = "SELECT COUNT(DISTINCT ChineseWords.Level) FROM ChineseWords"; // NEED FOR PHP
+$sqlTotalLevels = "SELECT COUNT(DISTINCT ChineseWords.Level) FROM ChineseWords";
 $sqlLevelSeperator = "SELECT count(*) from ChineseWords GROUP BY ChineseWords.'Level'";
 $sqlGroupSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Group'";
 $sqlDescDates = "SELECT ID, Hanzi, Pinyin, English FROM ChineseWords 
 JOIN UserChineseWords ON UserChineseWords.WordID = ChineseWords.ID
-WHERE UserChineseWords.UserID = 'bubness' AND UserChineseWords.DATE IS NOT NULL ORDER BY Date";
+WHERE UserChineseWords.UserID = 'bubness' AND UserChineseWords.LastEntered IS NOT NULL ORDER BY LastEntered";
 
 
-$result_Diff = $db->query($sql_Diff); // NEED FOR PHP
-$result_Mode = $db->query($sql_Mode); // NEED FOR PHP
+$result_Diff = $db->query($sql_Diff);
+$result_Mode = $db->query($sql_Mode);
 $result = $db->query($sql);
-$resultTotalWords = $db->query($sqlTotalLevels); // NEED FOR PHP
+$resultTotalWords = $db->query($sqlTotalLevels);
 $resultLevelSeperator = $db->query($sqlLevelSeperator);
 $resultGroupSeperator = $db->query($sqlGroupSeperator);
 $resultDescDates = $db->query($sqlDescDates);
@@ -25,14 +25,14 @@ $wordID = array();
 $hanziChars = array();
 $pinyinChars = array();
 $englishChars = array();
-$totalLevelsForGame = $resultTotalWords->fetchArray(); // NEED FOR PHP
+$totalLevelsForGame = $resultTotalWords->fetchArray();
 $levelSeperatorPoints = array();
 $groupSeperatorPoints = array();
 $descWordsByDate = array();
 
 // Fill arrays/variables
 // Difficulty
-$currentDifficulty = $result_Diff->fetchArray(); // NEED FOR PHP
+$currentDifficulty = $result_Diff->fetchArray();
 switch ($currentDifficulty[0]) {
   case 'Easy':
     $currentDifficultyValue = 1;
@@ -51,7 +51,7 @@ switch ($currentDifficulty[0]) {
 }
 
 // Gamemode
-$currentGamemode = $result_Mode->fetchArray(); // NEED FOR PHP
+$currentGamemode = $result_Mode->fetchArray();
 
 // Word information, ID/Foreign/Romanized/English
 while ($singlerow = $result->fetchArray()) {
@@ -91,6 +91,14 @@ array_push($descWordsByDate, $descWordsByDateID);
 array_push($descWordsByDate, $descWordsByDateHanzi);
 array_push($descWordsByDate, $descWordsByDatePinyin);
 array_push($descWordsByDate, $descWordsByDateEnglish);
+
+// 1 day review words
+
+// 1 week review words
+
+// 1 month review words
+
+// 6 month review words
 
 // All variables into a JSON:
 $arrOfArrays = array(

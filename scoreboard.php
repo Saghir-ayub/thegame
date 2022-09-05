@@ -14,7 +14,7 @@
     <!-- querying the database to pull data-->
     <?php
     $db = new SQLite3('enemyvalues.sq3');
-    $sql = "SELECT ChineseWords.ID, ChineseWords.Hanzi, ChineseWords.Pinyin, ChineseWords.English, UserChineseWords.WordScore, ChineseWords.Level,UserChineseWords.Date
+    $sql = "SELECT ChineseWords.ID, ChineseWords.Hanzi, ChineseWords.Pinyin, ChineseWords.English, UserChineseWords.WordScore, ChineseWords.Level,UserChineseWords.LastEntered
     FROM UserChineseWords
     JOIN
     ChineseWords

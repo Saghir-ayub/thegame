@@ -1,7 +1,7 @@
 <?php
 $q = $_REQUEST["q"];
 
-$currentDate = date("d/m/Y H:i:s");
+$currentDate = date("Y-m-d H:i:s");
 
 $db = new SQLite3('enemyvalues.sq3');
 

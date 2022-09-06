@@ -6,7 +6,7 @@ $sql = "SELECT * FROM ChineseWords";
 $sqlTotalLevels = "SELECT COUNT(DISTINCT ChineseWords.Level) FROM ChineseWords";
 $sqlLevelSeperator = "SELECT count(*) from ChineseWords GROUP BY ChineseWords.'Level'";
 $sqlGroupSeperator = "SELECT DISTINCT ChineseWords.ID FROM ChineseWords GROUP BY ChineseWords.'Group'";
-$sqlDescDates = "SELECT ID, Hanzi, Pinyin, English FROM ChineseWords 
+$sqlDescDates = "SELECT ID, Hanzi, Pinyin, English, UserChineseWords.WordScore, UserChineseWords.FirstLearnt, UserChineseWords.LastEntered FROM ChineseWords
 JOIN UserChineseWords ON UserChineseWords.WordID = ChineseWords.ID
 WHERE UserChineseWords.UserID = 'bubness' AND UserChineseWords.LastEntered IS NOT NULL ORDER BY LastEntered";
 
@@ -76,36 +76,76 @@ while ($singleGroupSeperator = $resultGroupSeperator->fetchArray()) {
   array_push($groupSeperatorPoints, $singleGroupSeperator[0]);
 }
 // Words done correctly, descending order from date last entered correctly
-$descWordsByDateID = array();
-$descWordsByDateHanzi = array();
-$descWordsByDatePinyin = array();
-$descWordsByDateEnglish = array();
 while ($singlerowDescDates = $resultDescDates->fetchArray()) {
-  array_push($descWordsByDateID, $singlerowDescDates[0]);
-  array_push($descWordsByDateHanzi, $singlerowDescDates[1]);
-  array_push($descWordsByDatePinyin, $singlerowDescDates[2]);
-  array_push($descWordsByDateEnglish, $singlerowDescDates[3]);
+  $descWordsByDate["WordID"][] = $singlerowDescDates[0];
+  $descWordsByDate["Hanzi"][] = $singlerowDescDates[1];
+  $descWordsByDate["Pinyin"][] = $singlerowDescDates[2];
+  $descWordsByDate["English"][] = $singlerowDescDates[3];
+  $descWordsByDate["WordScore"][] = $singlerowDescDates[4];
+  $descWordsByDate["FirstLearnt"][] = $singlerowDescDates[5];
+  $descWordsByDate["LastEntered"][] = $singlerowDescDates[6];
 }
-// pushing words done correctly by date into a single array
-array_push($descWordsByDate, $descWordsByDateID);
-array_push($descWordsByDate, $descWordsByDateHanzi);
-array_push($descWordsByDate, $descWordsByDatePinyin);
-array_push($descWordsByDate, $descWordsByDateEnglish);
 
-// 1 day review words
+// review words
+$wordsForReview = array();
+$currentDate = date("Y-m-d H:i:s");
 
-// 1 week review words
+for ($k = 0; $k < count($descWordsByDate["FirstLearnt"]); $k++) {
+  $learntDaysAgo = abs(strtotime($descWordsByDate["FirstLearnt"][$k]) - strtotime($currentDate)) / (60 * 60 * 24);
+  $enteredDaysAgo = abs(strtotime($descWordsByDate["LastEntered"][$k]) - strtotime($currentDate)) / (60 * 60 * 24);
+  $wordScore = $descWordsByDate["WordScore"][$k];
 
-// 1 month review words
+  if ($enteredDaysAgo >= 1) {
+    if (($wordScore >= 1 && $wordScore < 4) || $learntDaysAgo < 3) {
+      $wordsForReview["oneDay"]["WordID"][] = $descWordsByDate["WordID"][$k];
+      $wordsForReview["oneDay"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
+      $wordsForReview["oneDay"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
+      $wordsForReview["oneDay"]["English"][] = $descWordsByDate["English"][$k];
+    }
+  }
 
-// 6 month review words
+  if ($enteredDaysAgo >= 7) {
+    if (($wordScore >= 4 && $wordScore < 6) || ($learntDaysAgo >= 3 && $learntDaysAgo < 14)) {
+      $wordsForReview["oneWeek"]["WordID"][] = $descWordsByDate["WordID"][$k];
+      $wordsForReview["oneWeek"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
+      $wordsForReview["oneWeek"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
+      $wordsForReview["oneWeek"]["English"][] = $descWordsByDate["English"][$k];
+    }
+  }
+
+  if ($enteredDaysAgo >= 14) {
+    if (($wordScore >= 6 && $wordScore < 15) || ($learntDaysAgo >= 14 && $learntDaysAgo < 30)) {
+      $wordsForReview["twoWeek"]["WordID"][] = $descWordsByDate["WordID"][$k];
+      $wordsForReview["twoWeek"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
+      $wordsForReview["twoWeek"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
+      $wordsForReview["twoWeek"]["English"][] = $descWordsByDate["English"][$k];
+    }
+  }
+
+  if ($enteredDaysAgo >= 30) {
+    if (($wordScore >= 15 && $wordScore < 40) || ($learntDaysAgo >= 30 && $learntDaysAgo < 90)) {
+      $wordsForReview["oneMonth"]["WordID"][] = $descWordsByDate["WordID"][$k];
+      $wordsForReview["oneMonth"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
+      $wordsForReview["oneMonth"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
+      $wordsForReview["oneMonth"]["English"][] = $descWordsByDate["English"][$k];
+    }
+  }
+
+  if ($enteredDaysAgo >= 90) {
+    $wordsForReview["threeMonth"]["WordID"][] = $descWordsByDate["WordID"][$k];
+    $wordsForReview["threeMonth"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
+    $wordsForReview["threeMonth"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
+    $wordsForReview["threeMonth"]["English"][] = $descWordsByDate["English"][$k];
+  }
+}
 
 // All variables into a JSON:
 $arrOfArrays = array(
   'currentDifficulty' => $currentDifficultyValue, 'gamemode' => $currentGamemode[0],
   'wordID' => $wordID, 'hanziChars' => $hanziChars, 'pinyinChars' => $pinyinChars,
   'englishChars' => $englishChars, 'levelCaps' => $levelCaps,
-  'groupSeperatorPoints' => $groupSeperatorPoints, 'descWordByDate' => $descWordsByDate
+  'groupSeperatorPoints' => $groupSeperatorPoints, 'descWordByDate' => $descWordsByDate,
+  'wordsForReview' => $wordsForReview
 );
 echo json_encode($arrOfArrays);
 unset($db);

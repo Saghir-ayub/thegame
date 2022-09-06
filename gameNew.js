@@ -14,7 +14,7 @@ function restartLevel() {
     Game(levelMinimum, levelMaximum)
 }
 
-function Game(levelStart, levelEnd, gameType) {
+function Game(levelStart, levelEnd, gameType, reviewPeriod) {
     // removing any stored levelStart
     if (typeof window !== 'undefined') {
         localStorage.removeItem('levelMinimum')
@@ -42,11 +42,17 @@ function Game(levelStart, levelEnd, gameType) {
             difficultyLevel = parsedGameStartVariables.currentDifficulty
             gameMode = parsedGameStartVariables.gamemode
             if (gameType === "refreshMode") {
-                passWordID = parsedGameStartVariables.descWordByDate[0]
-                passHanzi = parsedGameStartVariables.descWordByDate[1]
-                passPinyin = parsedGameStartVariables.descWordByDate[2]
-                passEnglish = parsedGameStartVariables.descWordByDate[3]
+                passWordID = parsedGameStartVariables.descWordByDate["WordID"]
+                passHanzi = parsedGameStartVariables.descWordByDate["Hanzi"]
+                passPinyin = parsedGameStartVariables.descWordByDate["Pinyin"]
+                passEnglish = parsedGameStartVariables.descWordByDate["English"]
                 levelCaps = [0, 25, 50, 100]
+            } else if (gameType === "reviewMode" && reviewPeriod) {
+                passWordID = parsedGameStartVariables.wordsForReview[reviewPeriod]["WordID"]
+                passHanzi = parsedGameStartVariables.wordsForReview[reviewPeriod]["Hanzi"]
+                passPinyin = parsedGameStartVariables.wordsForReview[reviewPeriod]["Pinyin"]
+                passEnglish = parsedGameStartVariables.wordsForReview[reviewPeriod]["English"]
+                levelCaps = [0, 10000]
             } else {
                 passWordID = parsedGameStartVariables.wordID
                 passHanzi = parsedGameStartVariables.hanziChars

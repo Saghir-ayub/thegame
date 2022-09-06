@@ -118,6 +118,8 @@
         new Game(groupSeperatorPoints[k] + 1, groupSeperatorPoints[k + 1])
       })
     }
+
+    // custom oldest entered
     const playLastTwentyFive = document.getElementById("playLastTwentyFive")
     const playLastFifty = document.getElementById("playLastFifty")
     const playLastHundred = document.getElementById("playLastHundred")
@@ -130,6 +132,25 @@
     })
     playLastHundred.addEventListener('click', function() {
       new Game(1, 3, "refreshMode")
+    })
+
+    // custom review mode
+    const reviewDaily = document.getElementById("dailyReviewBtn")
+    const reviewWeekly = document.getElementById("weeklyReviewBtn")
+    const reviewBiweekly = document.getElementById("biweeklyReviewBtn")
+    const reviewMonthly = document.getElementById("monthlyReviewBtn")
+
+    reviewDaily.addEventListener('click', function() {
+      new Game(1, 1, "reviewMode", "oneDay")
+    })
+    reviewWeekly.addEventListener('click', function() {
+      new Game(1, 1, "reviewMode", "oneWeek")
+    })
+    reviewBiweekly.addEventListener('click', function() {
+      new Game(1, 1, "reviewMode", "twoWeek")
+    })
+    reviewMonthly.addEventListener('click', function() {
+      new Game(1, 1, "reviewMode", "oneMonth")
     })
   </script>
 
@@ -206,6 +227,10 @@
         <button id="playLastTwentyFive">Oldest 25</button>
         <button id="playLastFifty">Oldest 50</button>
         <button id="playLastHundred">Oldest 100</button>
+        <button id="dailyReviewBtn">Daily Button</button>
+        <button id="weeklyReviewBtn">Weekly Button</button>
+        <button id="biweeklyReviewBtn">Biweekly Button</button>
+        <button id="monthlyReviewBtn">Monthly Button</button>
       </div>
       <div class="col"></div>
     </div>

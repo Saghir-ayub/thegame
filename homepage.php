@@ -172,28 +172,22 @@
     })
 
     // custom review mode
-    let totalOneDayReviews = <?php echo json_encode($totalOneDayReviews); ?>;
-    let totalOneWeekReviews = <?php echo json_encode($totalOneWeekReviews); ?>;
-    let totalTwoWeeksReviews = <?php echo json_encode($totalTwoWeeksReviews); ?>;
-    let totalOneMonthReviews = <?php echo json_encode($totalOneMonthReviews); ?>;
-    let totalThreeMonthsReviews = <?php echo json_encode($totalThreeMonthsReviews); ?>;
-    const reviewDaily = document.getElementById("dailyReviewBtn")
-    const reviewWeekly = document.getElementById("weeklyReviewBtn")
-    const reviewBiweekly = document.getElementById("biweeklyReviewBtn")
-    const reviewMonthly = document.getElementById("monthlyReviewBtn")
-
-    reviewDaily.addEventListener('click', function() {
-      new Game(1, 1, "reviewMode", "oneDay")
-    })
-    reviewWeekly.addEventListener('click', function() {
-      new Game(1, 1, "reviewMode", "oneWeek")
-    })
-    reviewBiweekly.addEventListener('click', function() {
-      new Game(1, 1, "reviewMode", "twoWeek")
-    })
-    reviewMonthly.addEventListener('click', function() {
-      new Game(1, 1, "reviewMode", "oneMonth")
-    })
+    let totalOneDay = <?php echo json_encode($totalOneDayReviews[0]); ?>;
+    let totalOneWeek = <?php echo json_encode($totalOneWeekReviews[0]); ?>;
+    let totalTwoWeeks = <?php echo json_encode($totalTwoWeeksReviews[0]); ?>;
+    let totalOneMonth = <?php echo json_encode($totalOneMonthReviews[0]); ?>;
+    let totalThreeMonths = <?php echo json_encode($totalThreeMonthsReviews[0]); ?>;
+    const reviewBtns = document.getElementsByClassName("reviewBtn")
+    const reviewMode = ["oneDay", "oneWeek", "twoWeeks", "oneMonth", "threeMonths"]
+    const reviewAmnt = [totalOneDay, totalOneWeek, totalTwoWeeks, totalOneMonth, totalThreeMonths]
+    for (let r = 0; r < reviewBtns.length; r++) {
+      reviewBtns[r].addEventListener('click', function() {
+        new Game(1, 1, "reviewMode", reviewMode[r])
+      })
+      if (reviewAmnt[r] === 0) {
+        reviewBtns[r].disabled = true
+      }
+    }
   </script>
 
   <!-- old versions
@@ -269,10 +263,10 @@
         <button id="playLastTwentyFive">Oldest 25</button>
         <button id="playLastFifty">Oldest 50</button>
         <button id="playLastHundred">Oldest 100</button>
-        <button id="dailyReviewBtn">Daily Reviews (<?php echo $totalOneDayReviews[0]; ?>)</button>
-        <button id="weeklyReviewBtn">Weekly Reviews (<?php echo $totalOneWeekReviews[0]; ?>)</button>
-        <button id="biweeklyReviewBtn">Fortnightly Reviews (<?php echo $totalTwoWeeksReviews[0]; ?>)</button>
-        <button id="monthlyReviewBtn">Monthly Reviews (<?php echo $totalOneMonthReviews[0]; ?>)</button>
+        <button class="reviewBtn" id="dailyReviewBtn">Daily Reviews (<?php echo $totalOneDayReviews[0]; ?>)</button>
+        <button class="reviewBtn" id="weeklyReviewBtn">Weekly Reviews (<?php echo $totalOneWeekReviews[0]; ?>)</button>
+        <button class="reviewBtn" id="biweeklyReviewBtn">Fortnightly Reviews (<?php echo $totalTwoWeeksReviews[0]; ?>)</button>
+        <button class="reviewBtn" id="monthlyReviewBtn">Monthly Reviews (<?php echo $totalOneMonthReviews[0]; ?>)</button>
       </div>
       <div class="col"></div>
     </div>

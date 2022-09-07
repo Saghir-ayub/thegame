@@ -151,10 +151,10 @@ while ($singleOneWeekReview = $resultOneWeekReview->fetchArray()) {
 }
 
 while ($singleTwoWeeksReview = $resultTwoWeeksReview->fetchArray()) {
-  $wordsForReview["twoWeek"]["WordID"][] = $singleTwoWeeksReview[0];
-  $wordsForReview["twoWeek"]["Hanzi"][] = $singleTwoWeeksReview[1];
-  $wordsForReview["twoWeek"]["Pinyin"][] = $singleTwoWeeksReview[2];
-  $wordsForReview["twoWeek"]["English"][] = $singleTwoWeeksReview[3];
+  $wordsForReview["twoWeeks"]["WordID"][] = $singleTwoWeeksReview[0];
+  $wordsForReview["twoWeeks"]["Hanzi"][] = $singleTwoWeeksReview[1];
+  $wordsForReview["twoWeeks"]["Pinyin"][] = $singleTwoWeeksReview[2];
+  $wordsForReview["twoWeeks"]["English"][] = $singleTwoWeeksReview[3];
 }
 
 while ($singleOneMonthReview = $resultOneMonthReview->fetchArray()) {
@@ -165,10 +165,10 @@ while ($singleOneMonthReview = $resultOneMonthReview->fetchArray()) {
 }
 
 while ($singleThreeMonthsReview = $resultThreeMonthsReview->fetchArray()) {
-  $wordsForReview["threeMonth"]["WordID"][] = $singleThreeMonthsReview[0];
-  $wordsForReview["threeMonth"]["Hanzi"][] = $singleThreeMonthsReview[1];
-  $wordsForReview["threeMonth"]["Pinyin"][] = $singleThreeMonthsReview[2];
-  $wordsForReview["threeMonth"]["English"][] = $singleThreeMonthsReview[3];
+  $wordsForReview["threeMonths"]["WordID"][] = $singleThreeMonthsReview[0];
+  $wordsForReview["threeMonths"]["Hanzi"][] = $singleThreeMonthsReview[1];
+  $wordsForReview["threeMonths"]["Pinyin"][] = $singleThreeMonthsReview[2];
+  $wordsForReview["threeMonths"]["English"][] = $singleThreeMonthsReview[3];
 }
 
 // All variables into a JSON:

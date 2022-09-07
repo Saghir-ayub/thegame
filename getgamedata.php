@@ -89,54 +89,86 @@ while ($singlerowDescDates = $resultDescDates->fetchArray()) {
 // review words
 $wordsForReview = array();
 $currentDate = date("Y-m-d H:i:s");
+$oneDayAgo = date("Y-m-d H:i:s", (strtotime('-1 day', strtotime($currentDate))));
+$oneWeekAgo = date("Y-m-d H:i:s", (strtotime('-7 day', strtotime($currentDate))));
+$twoWeeksAgo = date("Y-m-d H:i:s", (strtotime('-14 day', strtotime($currentDate))));
+$oneMonthAgo = date("Y-m-d H:i:s", (strtotime('-30 day', strtotime($currentDate))));
+$threeMonthsAgo = date("Y-m-d H:i:s", (strtotime('-90 day', strtotime($currentDate))));
 
-for ($k = 0; $k < count($descWordsByDate["FirstLearnt"]); $k++) {
-  $learntDaysAgo = abs(strtotime($descWordsByDate["FirstLearnt"][$k]) - strtotime($currentDate)) / (60 * 60 * 24);
-  $enteredDaysAgo = abs(strtotime($descWordsByDate["LastEntered"][$k]) - strtotime($currentDate)) / (60 * 60 * 24);
-  $wordScore = $descWordsByDate["WordScore"][$k];
+// One day review
+$sqlOneDayReview = "SELECT ChineseWords.ID, ChineseWords.Hanzi, ChineseWords.Pinyin, ChineseWords.English FROM UserChineseWords
+JOIN ChineseWords ON ChineseWords.ID = WordID
+WHERE UserID = 'bubness'
+AND LastEntered <= '" . $oneDayAgo . "'
+AND WordScore BETWEEN 1 and 3
+ORDER BY WordScore";
+// One week review
+$sqlOneWeekReview = "SELECT ChineseWords.ID, ChineseWords.Hanzi, ChineseWords.Pinyin, ChineseWords.English FROM UserChineseWords
+JOIN ChineseWords ON ChineseWords.ID = WordID
+WHERE UserID = 'bubness'
+AND LastEntered <= '" . $oneWeekAgo . "'
+AND (WordScore BETWEEN 4 and 6 OR (FirstLearnt > '" . $twoWeeksAgo . "' AND FirstLearnt <= '" . $oneWeekAgo . "'))
+ORDER BY WordScore";
+// Two week review
+$sqlTwoWeekReview = "SELECT ChineseWords.ID, ChineseWords.Hanzi, ChineseWords.Pinyin, ChineseWords.English FROM UserChineseWords
+JOIN ChineseWords ON ChineseWords.ID = WordID
+WHERE UserID = 'bubness'
+AND LastEntered <= '" . $twoWeeksAgo . "'
+AND (WordScore BETWEEN 7 and 14 OR (FirstLearnt > '" . $oneMonthAgo . "' AND FirstLearnt <= '" . $twoWeeksAgo . "'))
+ORDER BY WordScore";
+// One month review
+$sqlOneMonthReview = "SELECT ChineseWords.ID, ChineseWords.Hanzi, ChineseWords.Pinyin, ChineseWords.English FROM UserChineseWords
+JOIN ChineseWords ON ChineseWords.ID = WordID
+WHERE UserID = 'bubness'
+AND LastEntered <= '" . $oneMonthAgo . "'
+AND (WordScore BETWEEN 15 and 40 OR (FirstLearnt > '" . $threeMonthsAgo . "' AND FirstLearnt <= '" . $oneMonthAgo . "'))
+ORDER BY WordScore";
+// Three month review
+$sqlThreeMonthsReview = "SELECT ChineseWords.ID, ChineseWords.Hanzi, ChineseWords.Pinyin, ChineseWords.English FROM UserChineseWords
+JOIN ChineseWords ON ChineseWords.ID = WordID
+WHERE UserID = 'bubness'
+AND LastEntered <= '" . $threeMonthsAgo . "'
+ORDER BY WordScore";
 
-  if ($enteredDaysAgo >= 1) {
-    if (($wordScore >= 1 && $wordScore < 4) || $learntDaysAgo < 3) {
-      $wordsForReview["oneDay"]["WordID"][] = $descWordsByDate["WordID"][$k];
-      $wordsForReview["oneDay"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
-      $wordsForReview["oneDay"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
-      $wordsForReview["oneDay"]["English"][] = $descWordsByDate["English"][$k];
-    }
-  }
+$resultOneDayReview = $db->query($sqlOneDayReview);
+$resultOneWeekReview = $db->query($sqlOneWeekReview);
+$resultTwoWeeksReview = $db->query($sqlTwoWeekReview);
+$resultOneMonthReview = $db->query($sqlOneMonthReview);
+$resultThreeMonthsReview = $db->query($sqlThreeMonthsReview);
 
-  if ($enteredDaysAgo >= 7) {
-    if (($wordScore >= 4 && $wordScore < 6) || ($learntDaysAgo >= 3 && $learntDaysAgo < 14)) {
-      $wordsForReview["oneWeek"]["WordID"][] = $descWordsByDate["WordID"][$k];
-      $wordsForReview["oneWeek"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
-      $wordsForReview["oneWeek"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
-      $wordsForReview["oneWeek"]["English"][] = $descWordsByDate["English"][$k];
-    }
-  }
+while ($singleOneDayReview = $resultOneDayReview->fetchArray()) {
+  $wordsForReview["oneDay"]["WordID"][] = $singleOneDayReview[0];
+  $wordsForReview["oneDay"]["Hanzi"][] = $singleOneDayReview[1];
+  $wordsForReview["oneDay"]["Pinyin"][] = $singleOneDayReview[2];
+  $wordsForReview["oneDay"]["English"][] = $singleOneDayReview[3];
+}
 
-  if ($enteredDaysAgo >= 14) {
-    if (($wordScore >= 6 && $wordScore < 15) || ($learntDaysAgo >= 14 && $learntDaysAgo < 30)) {
-      $wordsForReview["twoWeek"]["WordID"][] = $descWordsByDate["WordID"][$k];
-      $wordsForReview["twoWeek"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
-      $wordsForReview["twoWeek"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
-      $wordsForReview["twoWeek"]["English"][] = $descWordsByDate["English"][$k];
-    }
-  }
+while ($singleOneWeekReview = $resultOneWeekReview->fetchArray()) {
+  $wordsForReview["oneWeek"]["WordID"][] = $singleOneWeekReview[0];
+  $wordsForReview["oneWeek"]["Hanzi"][] = $singleOneWeekReview[1];
+  $wordsForReview["oneWeek"]["Pinyin"][] = $singleOneWeekReview[2];
+  $wordsForReview["oneWeek"]["English"][] = $singleOneWeekReview[3];
+}
 
-  if ($enteredDaysAgo >= 30) {
-    if (($wordScore >= 15 && $wordScore < 40) || ($learntDaysAgo >= 30 && $learntDaysAgo < 90)) {
-      $wordsForReview["oneMonth"]["WordID"][] = $descWordsByDate["WordID"][$k];
-      $wordsForReview["oneMonth"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
-      $wordsForReview["oneMonth"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
-      $wordsForReview["oneMonth"]["English"][] = $descWordsByDate["English"][$k];
-    }
-  }
+while ($singleTwoWeeksReview = $resultTwoWeeksReview->fetchArray()) {
+  $wordsForReview["twoWeek"]["WordID"][] = $singleTwoWeeksReview[0];
+  $wordsForReview["twoWeek"]["Hanzi"][] = $singleTwoWeeksReview[1];
+  $wordsForReview["twoWeek"]["Pinyin"][] = $singleTwoWeeksReview[2];
+  $wordsForReview["twoWeek"]["English"][] = $singleTwoWeeksReview[3];
+}
 
-  if ($enteredDaysAgo >= 90) {
-    $wordsForReview["threeMonth"]["WordID"][] = $descWordsByDate["WordID"][$k];
-    $wordsForReview["threeMonth"]["Hanzi"][] = $descWordsByDate["Hanzi"][$k];
-    $wordsForReview["threeMonth"]["Pinyin"][] = $descWordsByDate["Pinyin"][$k];
-    $wordsForReview["threeMonth"]["English"][] = $descWordsByDate["English"][$k];
-  }
+while ($singleOneMonthReview = $resultOneMonthReview->fetchArray()) {
+  $wordsForReview["oneMonth"]["WordID"][] = $singleOneMonthReview[0];
+  $wordsForReview["oneMonth"]["Hanzi"][] = $singleOneMonthReview[1];
+  $wordsForReview["oneMonth"]["Pinyin"][] = $singleOneMonthReview[2];
+  $wordsForReview["oneMonth"]["English"][] = $singleOneMonthReview[3];
+}
+
+while ($singleThreeMonthsReview = $resultThreeMonthsReview->fetchArray()) {
+  $wordsForReview["threeMonth"]["WordID"][] = $singleThreeMonthsReview[0];
+  $wordsForReview["threeMonth"]["Hanzi"][] = $singleThreeMonthsReview[1];
+  $wordsForReview["threeMonth"]["Pinyin"][] = $singleThreeMonthsReview[2];
+  $wordsForReview["threeMonth"]["English"][] = $singleThreeMonthsReview[3];
 }
 
 // All variables into a JSON:

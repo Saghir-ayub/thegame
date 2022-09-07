@@ -53,6 +53,7 @@ function Game(levelStart, levelEnd, gameType, reviewPeriod) {
                 passPinyin = parsedGameStartVariables.wordsForReview[reviewPeriod]["Pinyin"]
                 passEnglish = parsedGameStartVariables.wordsForReview[reviewPeriod]["English"]
                 levelCaps = [0, 10000]
+                // ======== Need to fix bug where empty array can be returned here ========
             } else {
                 passWordID = parsedGameStartVariables.wordID
                 passHanzi = parsedGameStartVariables.hanziChars

@@ -89,6 +89,43 @@
   for ($p = 1; $p <= $totalGroupsForGame; $p++) {
     array_push($groupSeperatorPoints, $groupSeperatorPoints[$p - 1] + $groupSeperatorCount[$p - 1]);
   }
+  $currentDate = date("Y-m-d H:i:s");
+  $oneDayAgo = date("Y-m-d H:i:s", (strtotime('-1 day', strtotime($currentDate))));
+  $oneWeekAgo = date("Y-m-d H:i:s", (strtotime('-7 day', strtotime($currentDate))));
+  $twoWeeksAgo = date("Y-m-d H:i:s", (strtotime('-14 day', strtotime($currentDate))));
+  $oneMonthAgo = date("Y-m-d H:i:s", (strtotime('-30 day', strtotime($currentDate))));
+  $threeMonthsAgo = date("Y-m-d H:i:s", (strtotime('-90 day', strtotime($currentDate))));
+  // One day review
+  $sqlOneDayReview = "SELECT count(*) FROM UserChineseWords WHERE UserID = 'bubness'
+  AND LastEntered <= '" . $oneDayAgo . "'
+  AND WordScore BETWEEN 1 and 3";
+  // One week review
+  $sqlOneWeekReview = "SELECT count(*) FROM UserChineseWords WHERE UserID = 'bubness'
+  AND LastEntered <= '" . $oneWeekAgo . "'
+  AND (WordScore BETWEEN 4 and 6 OR (FirstLearnt > '" . $twoWeeksAgo . "' AND FirstLearnt <= '" . $oneWeekAgo . "'))";
+  // Two week review
+  $sqlTwoWeekReview = "SELECT count(*) FROM UserChineseWords WHERE UserID = 'bubness'
+  AND LastEntered <= '" . $twoWeeksAgo . "'
+  AND (WordScore BETWEEN 7 and 14 OR (FirstLearnt > '" . $oneMonthAgo . "' AND FirstLearnt <= '" . $twoWeeksAgo . "'))";
+  // One month review
+  $sqlOneMonthReview = "SELECT count(*) FROM UserChineseWords WHERE UserID = 'bubness'
+  AND LastEntered <= '" . $oneMonthAgo . "'
+  AND (WordScore BETWEEN 15 and 40 OR (FirstLearnt > '" . $threeMonthsAgo . "' AND FirstLearnt <= '" . $oneMonthAgo . "'))";
+  // Three month review
+  $sqlThreeMonthsReview = "SELECT count(*) FROM UserChineseWords WHERE UserID = 'bubness'
+  AND LastEntered <= '" . $threeMonthsAgo . "'";
+
+  $resultOneDayReview = $db->query($sqlOneDayReview);
+  $resultOneWeekReview = $db->query($sqlOneWeekReview);
+  $resultTwoWeeksReview = $db->query($sqlTwoWeekReview);
+  $resultOneMonthReview = $db->query($sqlOneMonthReview);
+  $resultThreeMonthsReview = $db->query($sqlThreeMonthsReview);
+
+  $totalOneDayReviews = $resultOneDayReview->fetchArray();
+  $totalOneWeekReviews = $resultOneWeekReview->fetchArray();
+  $totalTwoWeeksReviews = $resultTwoWeeksReview->fetchArray();
+  $totalOneMonthReviews = $resultOneMonthReview->fetchArray();
+  $totalThreeMonthsReviews = $resultThreeMonthsReview->fetchArray();
   unset($db);
   ?>
   <!-- game canvas -->
@@ -105,7 +142,7 @@
       Enemy
     } from "./gameNew.js"
     const allLevels = document.getElementsByClassName("regular-levels")
-    for (let i = 1; i < allLevels.length; i++) {
+    for (let i = 1; i <= allLevels.length; i++) {
       let mini = i
       let maxi = i
       allLevels[i - 1].addEventListener('click', function() {
@@ -135,6 +172,11 @@
     })
 
     // custom review mode
+    let totalOneDayReviews = <?php echo json_encode($totalOneDayReviews); ?>;
+    let totalOneWeekReviews = <?php echo json_encode($totalOneWeekReviews); ?>;
+    let totalTwoWeeksReviews = <?php echo json_encode($totalTwoWeeksReviews); ?>;
+    let totalOneMonthReviews = <?php echo json_encode($totalOneMonthReviews); ?>;
+    let totalThreeMonthsReviews = <?php echo json_encode($totalThreeMonthsReviews); ?>;
     const reviewDaily = document.getElementById("dailyReviewBtn")
     const reviewWeekly = document.getElementById("weeklyReviewBtn")
     const reviewBiweekly = document.getElementById("biweeklyReviewBtn")
@@ -227,10 +269,10 @@
         <button id="playLastTwentyFive">Oldest 25</button>
         <button id="playLastFifty">Oldest 50</button>
         <button id="playLastHundred">Oldest 100</button>
-        <button id="dailyReviewBtn">Daily Button</button>
-        <button id="weeklyReviewBtn">Weekly Button</button>
-        <button id="biweeklyReviewBtn">Biweekly Button</button>
-        <button id="monthlyReviewBtn">Monthly Button</button>
+        <button id="dailyReviewBtn">Daily Reviews (<?php echo $totalOneDayReviews[0]; ?>)</button>
+        <button id="weeklyReviewBtn">Weekly Reviews (<?php echo $totalOneWeekReviews[0]; ?>)</button>
+        <button id="biweeklyReviewBtn">Fortnightly Reviews (<?php echo $totalTwoWeeksReviews[0]; ?>)</button>
+        <button id="monthlyReviewBtn">Monthly Reviews (<?php echo $totalOneMonthReviews[0]; ?>)</button>
       </div>
       <div class="col"></div>
     </div>

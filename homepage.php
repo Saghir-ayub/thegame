@@ -190,21 +190,51 @@
     }
   </script>
 
-  <!-- old versions
+  <!-- CSV Parsing -->
+  <form id="myForm">
+    <input type="file" id="csvFile" accept=".csv" />
+    <br />
+    <input type="submit" value="Submit" />
+  </form>
   <script>
-    const allLevels = document.getElementsByClassName("regular-levels")
-    for (let i = 1; i < allLevels.length; i++) {
-      let mini = 25 * (i - 1)
-      let maxi = 25 + 25 * (i - 1)
-      allLevels[i - 1].addEventListener('click', function() {
-        const game = new game(mini, maxi)
-      })
+    const myForm = document.getElementById("myForm");
+    const csvFile = document.getElementById("csvFile");
+
+    myForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const input = csvFile.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        const text = e.target.result
+        const data = csvToArray(text)
+        console.log(JSON.stringify(data))
+        const hr = new XMLHttpRequest()
+        const url = 'insertTable.php?q='
+        hr.open('POST', url + JSON.stringify(data), true)
+        hr.send()
+        alert("submitted")
+      };
+
+      reader.readAsText(input);
+    });
+
+    function csvToArray(str, delimiter = ",") {
+      const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+      const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+
+      const arr = rows.map(function(row) {
+        const values = row.split(delimiter);
+        const el = headers.reduce(function(object, header, index) {
+          object[header.replace("\r", "")] = values[index].replace("\r", "");
+          return object;
+        }, {});
+        return el;
+      });
+
+      return arr;
     }
   </script>
-
-  <script src="game0.js">
-
-  </script> -->
 
   <!-- game menu/level select -->
   <div class="container-fluid" id="gameMenu" style="display:block; position:absolute; top:20%; left:0px;">

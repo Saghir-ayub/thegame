@@ -209,19 +209,37 @@
         const text = e.target.result
         const data = csvToArray(text)
         console.log(JSON.stringify(data))
-        const hr = new XMLHttpRequest()
-        const url = 'insertTable.php?q='
-        hr.open('POST', url + JSON.stringify(data), true)
-        hr.send()
-        alert("submitted")
-      };
+        // const hr = new XMLHttpRequest()
+        // const url = 'insertTable.php?q='
+        // hr.open('POST', url + JSON.stringify(data), true)
+        // hr.send()
+        // alert("submitted")
 
+        // for (let d = 0; d < data.length; d++) {
+          let formData = new FormData()
+          formData.append('csvData', JSON.stringify(data))
+          fetch('insertTable.php', {
+            method: "POST",
+            body: formData,
+          }).then(resp => {
+            if (!resp.ok) {
+              const err = new Error("Response wasn't okay");
+              err.resp = resp;
+              throw err;
+            }
+            console.log("Okay!");
+          }).catch(err => {
+            console.error(err);
+          });
+        };
+      // }
+      alert("submitted")
       reader.readAsText(input);
     });
 
     function csvToArray(str, delimiter = ",") {
-      const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
-      const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+      const headers = ["Hanzi", "Pinyin", "English", "Group", "Level"];
+      const rows = str.split("\n");
 
       const arr = rows.map(function(row) {
         const values = row.split(delimiter);

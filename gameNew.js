@@ -123,6 +123,8 @@ function Game(levelStart, levelEnd, gameType, reviewPeriod) {
     let initialSpeed = 1 // === try convert to WPM ===
     const initialEnemySpawnRate = 5 * FPS //= ==need to convert to seconds ===
     let gameClock = 180 * FPS // seconds
+    let timePlayed = 0 // updates players time played every 15 secs
+    const updateTimeInterval = 5 // number of seconds between each timePlayed update
     const minutesConvertRate = 60 * FPS
     const secondsConvertRate = minutesConvertRate / 60
     let minutes = gameClock / minutesConvertRate
@@ -336,6 +338,13 @@ function Game(levelStart, levelEnd, gameType, reviewPeriod) {
     }
 
     function updateAll() {
+        // Update user playtime
+        timePlayed += 1
+        if (timePlayed >= updateTimeInterval * FPS) {
+            updateTimePlayed(updateTimeInterval)
+            timePlayed = 0
+        }
+
         // Move enemies
         for (let i = 0; i < numEnemies; i++) {
             const enemy = enemies[i]
@@ -858,4 +867,11 @@ function databaseScoreUpdate(dataName) {
     hr.send()
 }
 
+function updateTimePlayed(timeInterval) {
+    const interval = timeInterval
+    const hr = new XMLHttpRequest()
+    const url = 'updateTimePlayed.php?q='
+    hr.open('POST', url+interval, true)
+    hr.send()
+}
 export { Game, restartLevel, endgameDisplayLayout, spawnEnemyCheck, isGameOver, Booster, Enemy }

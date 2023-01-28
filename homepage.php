@@ -191,11 +191,13 @@
   </script>
 
   <!-- CSV Parsing -->
+  <div id="submitDataForm" style="display:none">
   <form id="myForm">
     <input type="file" id="csvFile" accept=".csv" />
     <br />
     <input type="submit" value="Submit" />
   </form>
+  </div>
   <script>
     const myForm = document.getElementById("myForm");
     const csvFile = document.getElementById("csvFile");

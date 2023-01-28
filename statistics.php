@@ -133,6 +133,37 @@
 	while ($wordsAvgScoreGroupRow = $wordsAvgScore->fetchArray()) {
 		array_push($groupWordsAverageScoreArray, $wordsAvgScoreGroupRow[0]);
 	}
+
+	// Start date and time played
+	$sql_timePlayed = "SELECT Playtime FROM UserInfo WHERE Username = 'bubness'";
+	$timePlayed_dbquery = $db->query($sql_timePlayed);
+	$timePlayedArray = $timePlayed_dbquery->fetchArray();
+	$secondsInADay = 60 * 60 * 24;
+	$secondsInAnHour = 60 * 60;
+	$secondsInAMinute = 60;
+
+	$daysPlayed = floor($timePlayedArray[0] / $secondsInADay);
+	$hoursPlayed = floor(($timePlayedArray[0] - ($daysPlayed * $secondsInADay)) / $secondsInAnHour);
+	$minutesPlayed = floor(($timePlayedArray[0] - ($daysPlayed * $secondsInADay) -
+		($hoursPlayed * $secondsInAnHour)) / $secondsInAMinute);
+	$secondsPlayed = floor($timePlayedArray[0] - ($daysPlayed * $secondsInADay) -
+		($hoursPlayed * $secondsInAnHour) - ($minutesPlayed * $secondsInAMinute));
+
+	$daysOrDay = ($daysPlayed == 0 || $daysPlayed > 1) ? " days " : " day ";
+	$hoursOrHour = ($hoursPlayed == 0 || $hoursPlayed > 1) ? " hours " : " hour ";
+	$minutesOrMinute = ($minutesPlayed == 0 || $minutesPlayed > 1) ? " minutes " : " minute ";
+	$secondsOrSecond = ($secondsPlayed == 0 || $secondsPlayed > 1) ? " seconds" : " second";
+
+	if ($daysPlayed > 0) {
+		$actualTimePlayed = ($daysPlayed) . $daysOrDay . ($hoursPlayed) . $hoursOrHour . ($minutesPlayed) . $minutesOrMinute . "and " . ($secondsPlayed) . $secondsOrSecond;
+	} else if ($hoursPlayed > 0) {
+		$actualTimePlayed = ($hoursPlayed) . $hoursOrHour . ($minutesPlayed) . $minutesOrMinute . "and " . ($secondsPlayed) . $secondsOrSecond;
+	} else if ($minutesPlayed > 0) {
+		$actualTimePlayed = ($minutesPlayed) . $minutesOrMinute . "and " . ($secondsPlayed) .	 $secondsOrSecond;
+	} else {
+		$actualTimePlayed = ($secondsPlayed) . $secondsOrSecond;
+	}
+
 	unset($db);
 	?>
 	<div id="overallStatsData" class="statisticData">
@@ -152,6 +183,12 @@
  			<p> Total score: " . $groupWordsTotalScoreArray[$i - 1] . "</p>
  			<p> Average score per word: " . $groupWordsAverageScoreArray[$i - 1] . "</p>";
 		}
+		?>
+	</div>
+
+	<div id="timePlayedData" class="statisticData">
+		<?php
+		echo "<p><b>Total time played: " . $actualTimePlayed . "</b></p>";
 		?>
 	</div>
 </body>

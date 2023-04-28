@@ -171,7 +171,8 @@
 		echo "<p>Total Words known: " . $totalWordsKnown[0] . "/" . $totalWords[0] . "</p>
 	<p>Words known well: " . $totalWordsKnownWell[0] . " (20+ score)</p>
 	<p>Words Mastered: " . $totalWordsMastered[0] . " (40+ score)</p>
-	<p>Total Score: " . $totalScoreAll[0] . "</p>";
+	<p>Total Score: " . $totalScoreAll[0] . "</p>
+	<p><b>Total time played: " . $actualTimePlayed . "</b></p>";
 		?>
 	</div>
 
@@ -183,12 +184,6 @@
  			<p> Total score: " . $groupWordsTotalScoreArray[$i - 1] . "</p>
  			<p> Average score per word: " . $groupWordsAverageScoreArray[$i - 1] . "</p>";
 		}
-		?>
-	</div>
-
-	<div id="timePlayedData" class="statisticData">
-		<?php
-		echo "<p><b>Total time played: " . $actualTimePlayed . "</b></p>";
 		?>
 	</div>
 </body>
